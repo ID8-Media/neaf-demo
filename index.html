@@ -305,6 +305,61 @@ body[dir="ltr"] { font-family: var(--font-en); }
 }
 .sources-legend span { display: flex; align-items: center; gap: 6px; }
 
+/* ============ SECTION NOTES ============ */
+.section-note {
+  background: linear-gradient(135deg, rgba(141,27,61,0.04), rgba(141,27,61,0.02));
+  border: 1px dashed rgba(141,27,61,0.2);
+  border-radius: 10px; padding: 14px 18px; margin-bottom: 20px;
+  font-size: 0.8rem; color: var(--text-dim); line-height: 1.7;
+  position: relative; padding-inline-start: 40px;
+}
+.section-note::before {
+  content: 'i'; position: absolute; top: 14px; inset-inline-start: 14px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--maroon); color: white; font-size: 0.65rem;
+  font-weight: 700; font-style: italic;
+  display: flex; align-items: center; justify-content: center;
+  font-family: Georgia, serif;
+}
+.section-note strong { color: var(--maroon); font-weight: 600; }
+.section-note .note-production {
+  display: inline-block; margin-top: 6px; padding: 3px 10px;
+  background: rgba(22, 163, 74, 0.08); color: var(--green);
+  border-radius: 4px; font-size: 0.72rem; font-weight: 600;
+}
+.hero-note {
+  background: rgba(141,27,61,0.05);
+  border-radius: 10px; padding: 12px 18px; margin-top: 14px;
+  font-size: 0.78rem; color: var(--text-dim); line-height: 1.7;
+  border-right: 3px solid var(--maroon);
+}
+body[dir="ltr"] .hero-note { border-right: none; border-left: 3px solid var(--maroon); }
+.hero-note strong { color: var(--maroon); }
+
+/* ============ NEAF LAYERS BAR ============ */
+.layers-bar {
+  display: flex; gap: 0; margin-bottom: 24px;
+  background: var(--navy-card); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.layer-item {
+  flex: 1; padding: 14px 16px; text-align: center;
+  border-inline-end: 1px solid var(--border); position: relative;
+  transition: all 0.2s;
+}
+.layer-item:last-child { border-inline-end: none; }
+.layer-item:hover { background: rgba(141,27,61,0.03); }
+.layer-item .layer-num {
+  display: inline-block; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--maroon); color: white; font-size: 0.65rem;
+  font-weight: 700; line-height: 22px; margin-bottom: 4px;
+}
+.layer-item .layer-name { font-size: 0.78rem; font-weight: 600; color: var(--text); display: block; }
+.layer-item .layer-desc { font-size: 0.65rem; color: var(--text-muted); display: block; margin-top: 2px; }
+.layer-item.active { background: rgba(141,27,61,0.06); }
+.layer-item.active .layer-num { box-shadow: 0 0 0 3px rgba(141,27,61,0.2); }
+
 /* ============ ANIMATIONS ============ */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(20px); }
@@ -352,6 +407,30 @@ body[dir="ltr"] { font-family: var(--font-en); }
 <!-- DASHBOARD -->
 <div class="dashboard">
 
+  <!-- NEAF ARCHITECTURE LAYERS -->
+  <div class="layers-bar animate-in">
+    <div class="layer-item">
+      <span class="layer-num">1</span>
+      <span class="layer-name" data-ar="المؤشرات الكمية" data-en="Quantitative Indicators">المؤشرات الكمية</span>
+      <span class="layer-desc" data-ar="بيانات رسمية + بديلة" data-en="Official + alternative data">بيانات رسمية + بديلة</span>
+    </div>
+    <div class="layer-item">
+      <span class="layer-num">2</span>
+      <span class="layer-name" data-ar="الذكاء السردي" data-en="Narrative Intelligence">الذكاء السردي</span>
+      <span class="layer-desc" data-ar="تحليل أخبار + مشاعر AI" data-en="AI news + sentiment analysis">تحليل أخبار + مشاعر AI</span>
+    </div>
+    <div class="layer-item">
+      <span class="layer-num">3</span>
+      <span class="layer-name" data-ar="منطق التنبيه" data-en="Alert Logic">منطق التنبيه</span>
+      <span class="layer-desc" data-ar="عتبات + إشارات مركبة" data-en="Thresholds + composite signals">عتبات + إشارات مركبة</span>
+    </div>
+    <div class="layer-item">
+      <span class="layer-num">4</span>
+      <span class="layer-name" data-ar="التنبؤ والمحاكاة" data-en="Prediction & Simulation">التنبؤ والمحاكاة</span>
+      <span class="layer-desc" data-ar="Nowcasting + سيناريوهات" data-en="Nowcasting + scenarios">Nowcasting + سيناريوهات</span>
+    </div>
+  </div>
+
   <!-- RISK HERO -->
   <div class="risk-hero animate-in">
     <div class="risk-gauge">
@@ -371,10 +450,12 @@ body[dir="ltr"] { font-family: var(--font-en); }
         <span>|</span>
         <span data-ar="دورة التحديث: كل 6 ساعات" data-en="Update cycle: Every 6 hours">دورة التحديث: كل 6 ساعات</span>
       </div>
+      <div class="hero-note" data-ar="<strong>ما هذا المؤشر؟</strong> يجمع NEAF Score بيانات من 5 مجالات اقتصادية في رقم واحد (0–4). يعمل كجهاز إنذار مبكر للمخاطر الاقتصادية الوطنية. النظام المكتمل سيستقبل بيانات مباشرة من QCB وPSA وQatarEnergy كل 6 ساعات، ويحدّث المؤشر تلقائياً باستخدام نماذج إحصائية مُعايَرة على تاريخ قطر الاقتصادي." data-en="<strong>What is this?</strong> The NEAF Score aggregates data from 5 economic domains into a single number (0–4), functioning as a national early warning system. In production, the system will ingest live feeds from QCB, PSA, and QatarEnergy every 6 hours, automatically updating the score using statistical models calibrated on Qatar's economic history."><strong>ما هذا المؤشر؟</strong> ��جمع NEAF Score بيانات من 5 ��جالات اقتصادية في رقم وا��د (0–4). يعمل كجهاز إنذار مبكر للمخاطر الاقتصادية الوطنية. النظام المكتمل سيستقب�� بيانات مباشرة من QCB وPSA وQatarEnergy كل 6 ساعات، ويحدّث المؤشر تلقائياً باستخدام نماذج إحصائية مُعايَرة على تاريخ قطر الاقتصادي.</div>
     </div>
   </div>
 
   <!-- DOMAIN CARDS -->
+  <div class="section-note" data-ar="<strong>المجالات الخمسة</strong> — كل بطاقة تمثل مجال اقتصادي رئيسي. الدرجة (0–4) محسوبة من عدة مؤشرات فرعية. <strong>أخضر</strong> = طبيعي، <strong>أصفر</strong> = يستدعي المراقبة، <strong>برتقالي</strong> = تحذير، <strong>أحمر</strong> = حرج. في النسخة النهائية: الضغط على أي بطاقة يعرض تفاصيل كل مؤشر فرعي مع سياقه التاريخي. <span class='note-production'>في الإنتاج: بيانات مباشرة من QCB + PSA + QatarEnergy</span>" data-en="<strong>Five Domains</strong> — Each card represents a major economic domain. Score (0–4) is calculated from multiple sub-indicators. <strong>Green</strong> = normal, <strong>Yellow</strong> = watch, <strong>Orange</strong> = warning, <strong>Red</strong> = critical. In production: clicking any card reveals sub-indicator details with historical context. <span class='note-production'>Production: Live feeds from QCB + PSA + QatarEnergy</span>"><strong>المجالات الخمسة</strong> — كل بطاقة تمثل مجال اقتصادي رئيسي. الدرجة (0–4) محسوبة من عدة مؤشرات فرعية. <strong>أخضر</strong> = طبيعي، <strong>أصفر</strong> = يستدعي المراقبة، <strong>برتقالي</strong> = تحذير، <strong>أحمر</strong> = حرج. في النسخة النهائية: الضغط على أي بطاقة يعرض تفاصيل كل مؤشر فرعي مع سياقه التاريخي. <span class='note-production'>في الإنتاج: بيانات مباشرة من QCB + PSA + QatarEnergy</span></div>
   <div class="domains-grid">
     <div class="domain-card yellow animate-in delay-1">
       <div class="domain-icon">&#9981;</div>
@@ -424,6 +505,7 @@ body[dir="ltr"] { font-family: var(--font-en); }
       <h3 data-ar="المحاور السبعة — المؤشرات الكمية" data-en="Seven Themes — Quantitative Indicators">المحاور السبعة — المؤشرات الكمية</h3>
       <span class="section-badge">Layer 1</span>
     </div>
+    <div class="section-note" data-ar="<strong>الطبقة الأولى — المؤشرات الكمية</strong>: تعرض 7 محاور اقتصادية رئيسية بقيم حقيقية من مصادر رسمية (PSA, QCB, S&amp;P Global, QTA, Mwani). كل محور يعرض القيمة الحالية + اتجاه 12 شهر. في النظام المكتمل: <strong>47+ مؤشر فرعي</strong> يتم سحبها تلقائياً عبر APIs مع تصحيح موسمي وكشف القيم الشاذة. <span class='note-production'>جميع القيم المعروضة حالياً بيانات حقيقية [R] ما عدا المؤشرات المركبة</span>" data-en="<strong>Layer 1 — Quantitative Indicators</strong>: Displays 7 key economic themes with real values from official sources (PSA, QCB, S&amp;P Global, QTA, Mwani). Each shows current value + 12-month trend. In production: <strong>47+ sub-indicators</strong> auto-ingested via APIs with seasonal adjustment and outlier detection. <span class='note-production'>All values shown are real data [R] except composite scores</span>"><strong>الطبقة الأولى — المؤشرات الكمية</strong>: تعرض 7 محاور اقتصادية رئيسية بقيم حقيقية من مصادر رسمية (PSA, QCB, S&amp;P Global, QTA, Mwani). كل محور يعرض القيمة الحالية + اتجاه 12 شهر. في النظام المكتمل: <strong>47+ مؤشر فرعي</strong> يتم سحبها تلقائياً عبر APIs مع تصحيح موسمي وكشف القيم الشاذة. <span class='note-production'>جميع القيم المعروضة حالياً بيانات حقيقية [R] ما عدا المؤشرات المركبة</span></div>
     <div class="themes-grid" id="themesGrid"></div>
   </div>
 
@@ -433,6 +515,7 @@ body[dir="ltr"] { font-family: var(--font-en); }
       <h3 data-ar="التقدير اللحظي للناتج المحلي — Nowcast" data-en="GDP Nowcast — Real-time Estimate">التقدير اللحظي للناتج المحلي — Nowcast</h3>
       <span class="section-badge">Layer 4</span>
     </div>
+    <div class="section-note" data-ar="<strong>الطبقة الرابعة — التنبؤ اللحظي (Nowcasting)</strong>: يقدّر GDP الحالي قبل صدور الأرقام الرسمية بأشهر. يستخدم نموذج Dynamic Factor Model (نفس منهجية البنك المركزي الأوروبي وNY Fed). يوضح تأثير كل خبر جديد على التقدير. في الإنتاج: يتحدث تلقائياً مع كل إصدار بيانات جديد — GDP, PMI, تجارة, تضخم. <span class='note-production'>النموذج تجريبي — يحتاج بيانات PSA/QCB التاريخية للمعايرة</span>" data-en="<strong>Layer 4 — Nowcasting</strong>: Estimates current GDP months before official release. Uses Dynamic Factor Model (same methodology as ECB and NY Fed). Shows how each new data release impacts the estimate. In production: auto-updates with every data release — GDP, PMI, trade, inflation. <span class='note-production'>Model is experimental — requires PSA/QCB historical data for calibration</span>"><strong>الطبقة الرابعة — التنبؤ اللحظي (Nowcasting)</strong>: يقدّر GDP الحالي قبل صدور الأرقام الرسمية بأشهر. يستخدم نموذج Dynamic Factor Model (نفس منهجية البنك المركزي الأوروبي وNY Fed). يوضح تأثير كل خبر جديد على التقدير. في الإنتاج: يتحدث تلقائياً مع كل إصدار بيانات جديد — GDP, PMI, تجارة, تضخم. <span class='note-production'>النموذج تجريبي — يحتاج بيانات PSA/QCB التاريخية للمعايرة</span></div>
     <div class="nowcast-grid">
       <div class="nowcast-chart"><canvas id="nowcastChart"></canvas></div>
       <div class="nowcast-sidebar">
@@ -449,6 +532,7 @@ body[dir="ltr"] { font-family: var(--font-en); }
       <h3 data-ar="اختبار تاريخي — أزمة النفط 2014-2016" data-en="Backtest — 2014-2016 Oil Crisis">اختبار تاريخي — أزمة النفط 2014-2016</h3>
       <span class="section-badge" data-ar="إثبات المفهوم" data-en="Proof of Concept">إثبات المفهوم</span>
     </div>
+    <div class="section-note" data-ar="<strong>إثبات المفهوم — الاختبار التاريخي</strong>: نعرض أزمة النفط 2014-2016 ونوضح كيف كان NEAF سينبّه صناع القرار <strong>18 شهراً قبل ذروة الأزمة</strong>. أسعار النفط حقيقية من الأرشيف التاريخي. مستويات الإنذار محاكاة باستخدام منهجية BIS credit-to-GDP gap — وهي الأكثر إثباتاً أكاديمياً للتنبؤ بالأزمات المالية. هذا الاختبار يجيب على السؤال: <strong>هل النظام كان سيعمل فعلاً؟</strong>" data-en="<strong>Proof of Concept — Historical Backtest</strong>: We replay the 2014-2016 oil crisis to show how NEAF would have alerted policymakers <strong>18 months before the crisis peak</strong>. Oil prices are real historical data. Alert levels are simulated using the BIS credit-to-GDP gap methodology — the most academically validated crisis predictor. This answers: <strong>Would the system actually have worked?</strong>"><strong>إثبات المفهوم — الاختبار التاريخي</strong>: نعرض أزمة النفط 2014-2016 ونوضح كيف كان NEAF سينبّه صناع القرار <strong>18 شهراً قبل ذروة الأزمة</strong>. أسعار النفط حقيقية من الأرشيف التاريخي. مستويات الإنذار محاكاة باستخدام منهجية BIS credit-to-GDP gap — وهي الأكثر إثباتاً أكاديمياً للتنبؤ بالأزمات المالية. هذا الاختبار يجيب على السؤال: <strong>هل النظام كان سيعمل فعلاً؟</strong></div>
     <div class="backtest-chart"><canvas id="backtestChart"></canvas></div>
     <div class="backtest-narrative" id="backtestNarrative"></div>
   </div>
@@ -459,6 +543,7 @@ body[dir="ltr"] { font-family: var(--font-en); }
       <h3 data-ar="الذكاء السردي — طبقة سنترا" data-en="Narrative Intelligence — Sentra Layer">الذكاء السردي — طبقة سنترا</h3>
       <span class="section-badge">Layer 2</span>
     </div>
+    <div class="section-note" data-ar="<strong>الطبقة الثانية — الذكاء السردي (Sentra)</strong>: يراقب آلاف المصادر الإخبارية (عربي + إنجليزي) ويصنّف كل خبر حسب الصلة الاقتصادية والمشاعر. يكتشف الأخطار السردية <strong>قبل أن تظهر في الأرقام</strong> — مثل توتر سياسي أو تغيّر في الخطاب الإعلامي. Sentra مُنشَر حالياً داخل البنية التحتية الحكومية القطرية (وزارة الخارجية). <span class='note-production'>منشور فعلياً في MOFA — جاهز للتوسيع لـ NEAF</span>" data-en="<strong>Layer 2 — Narrative Intelligence (Sentra)</strong>: Monitors thousands of news sources (Arabic + English), classifying each by economic relevance and sentiment. Detects narrative risks <strong>before they appear in numbers</strong> — political tensions, shifts in media discourse. Sentra is already deployed inside Qatar government infrastructure (MOFA). <span class='note-production'>Already deployed in MOFA — ready to extend for NEAF</span>"><strong>الطبقة الثانية — الذكاء السردي (Sentra)</strong>: يراقب آلاف المصادر الإخبارية (عربي + إنجليزي) ويصنّف كل خبر حسب الصلة الاقتصادية والمشاعر. يكتشف الأخطار السردية <strong>قبل أن تظهر في الأرقام</strong> — مثل توتر سياسي أو تغيّر في الخطاب الإعلامي. Sentra مُنشَر حالياً داخل البنية التحتية الحكومية القطرية (وزارة الخارجية). <span class='note-production'>منشور فعلياً في MOFA — جاهز للتوسيع لـ NEAF</span></div>
     <div class="sentra-grid">
       <div>
         <div class="sentra-chart"><canvas id="sentimentChart"></canvas></div>
@@ -632,7 +717,12 @@ function toggleLang() {
   document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
   document.getElementById('langBtn').textContent = lang === 'ar' ? 'EN' : 'عربي';
   document.querySelectorAll('[data-ar]').forEach(el => {
-    el.textContent = el.getAttribute('data-' + lang);
+    const val = el.getAttribute('data-' + lang);
+    if (val && (val.includes('<') || el.classList.contains('section-note') || el.classList.contains('hero-note'))) {
+      el.innerHTML = val;
+    } else {
+      el.textContent = val;
+    }
   });
   renderThemes();
   renderNowcastNews();
@@ -706,6 +796,7 @@ function renderThemes() {
       <div class="theme-trend">
         <span class="${t.trend === 'up' ? 'arrow-up' : t.trend === 'down' ? 'arrow-down' : ''}">${t.trend === 'up' ? '&#9650;' : t.trend === 'down' ? '&#9660;' : '&#9644;'}</span>
         ${t.change}
+        <span class="source-badge ${t.src === 'R' ? 'real' : 'sim'}" style="margin-inline-start:auto;font-size:0.55rem;padding:1px 5px;">${t.src}</span>
       </div>
       <div class="theme-sparkline"><canvas id="theme${i}"></canvas></div>
     </div>
