@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEAF — National Early Alert Framework</title>
+<link rel="icon" type="image/jpeg" href="https://sceai.gov.qa/assets/logo.jpg">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+/* ============ RESET & BASE ============ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --maroon: #8D1B3D;
+  --maroon-dark: #6B1530;
+  --maroon-light: #A82050;
+  --navy: #F5F6FA;
+  --navy-light: #EBEDF5;
+  --navy-card: #FFFFFF;
+  --gold: #8D1B3D;
+  --gold-light: #A82050;
+  --green: #16A34A;
+  --green-bg: rgba(22, 163, 74, 0.1);
+  --yellow: #CA8A04;
+  --yellow-bg: rgba(202, 138, 4, 0.1);
+  --orange: #EA580C;
+  --orange-bg: rgba(234, 88, 12, 0.1);
+  --red: #DC2626;
+  --red-bg: rgba(220, 38, 38, 0.1);
+  --text: #1E293B;
+  --text-dim: #475569;
+  --text-muted: #94A3B8;
+  --border: rgba(0,0,0,0.08);
+  --glow-green: 0 0 12px rgba(22, 163, 74, 0.2);
+  --font-ar: 'Segoe UI', Tahoma, Arial, sans-serif;
+  --font-en: 'Segoe UI', -apple-system, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-ar);
+  background: var(--navy);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+body[dir="ltr"] { font-family: var(--font-en); }
+
+/* ============ MOBILE BLOCK ============ */
+.mobile-block {
+  display: none;
+  position: fixed; inset: 0; z-index: 9999;
+  background: #FFFFFF;
+  flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 40px;
+}
+.mobile-block img { width: 120px; margin-bottom: 30px; opacity: 0.8; }
+.mobile-block h2 { color: var(--text); font-size: 1.5rem; margin-bottom: 10px; }
+.mobile-block p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 30px; }
+.mobile-block button {
+  background: var(--maroon); color: white; border: none; padding: 12px 28px;
+  border-radius: 8px; font-size: 1rem; cursor: pointer;
+}
+@media (max-width: 900px) {
+  .mobile-block { display: flex; }
+  .dashboard { display: none !important; }
+}
+
+/* ============ HEADER ============ */
+.header {
+  background: linear-gradient(135deg, var(--maroon-dark), var(--maroon));
+  padding: 16px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 2px solid rgba(201,168,76,0.6);
+  position: sticky; top: 0; z-index: 100;
+}
+.header-right { display: flex; align-items: center; gap: 16px; }
+.header-right img { height: 52px; }
+.header-title { display: flex; flex-direction: column; }
+.header-title h1 {
+  font-size: 1.15rem; font-weight: 700; color: white;
+  letter-spacing: 0.5px;
+}
+.header-title .subtitle {
+  font-size: 0.8rem; color: rgba(255,255,255,0.7);
+  font-weight: 400;
+}
+.header-left { display: flex; align-items: center; gap: 16px; }
+.lang-toggle {
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+  color: white; padding: 6px 16px; border-radius: 6px; cursor: pointer;
+  font-size: 0.85rem; transition: all 0.2s;
+}
+.lang-toggle:hover { background: rgba(255,255,255,0.25); }
+.header-date { color: rgba(255,255,255,0.8); font-size: 0.85rem; }
+
+/* ============ DASHBOARD ============ */
+.dashboard { max-width: 1400px; margin: 0 auto; padding: 24px 32px 60px; }
+
+/* ============ RISK HERO ============ */
+.risk-hero {
+  display: flex; align-items: center; gap: 40px;
+  background: var(--navy-card);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 32px 40px; margin-bottom: 24px;
+  position: relative; overflow: hidden;
+}
+.risk-hero::before {
+  content: ''; position: absolute; top: 0; right: 0;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, var(--yellow-bg), transparent 70%);
+  pointer-events: none;
+}
+.risk-gauge { position: relative; width: 160px; height: 160px; flex-shrink: 0; }
+.risk-gauge canvas { width: 160px !important; height: 160px !important; }
+.risk-score-overlay {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  text-align: center;
+}
+.risk-hero { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.risk-score-number { font-size: 2.5rem; font-weight: 800; color: var(--yellow); line-height: 1; }
+.risk-score-label { font-size: 0.7rem; color: var(--text-dim); margin-top: 2px; }
+.risk-info { flex: 1; }
+.risk-info h2 { font-size: 1.6rem; margin-bottom: 8px; }
+.risk-info h2 .status-dot {
+  display: inline-block; width: 14px; height: 14px; border-radius: 50%;
+  margin-inline-end: 8px; box-shadow: var(--glow-green);
+}
+.risk-info .risk-desc { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 12px; }
+.risk-info .risk-meta { display: flex; gap: 24px; font-size: 0.8rem; color: var(--text-muted); }
+.risk-info .risk-meta span { display: flex; align-items: center; gap: 4px; }
+
+/* ============ DOMAIN CARDS ============ */
+.domains-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+  margin-bottom: 24px;
+}
+.domain-card {
+  background: var(--navy-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px 16px; text-align: center;
+  transition: all 0.3s; cursor: default; position: relative; overflow: hidden;
+}
+.domain-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.domain-card.green::before { background: var(--green); }
+.domain-card.yellow::before { background: var(--yellow); }
+.domain-card.orange::before { background: var(--orange); }
+.domain-card.red::before { background: var(--red); }
+.domain-card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.15); }
+.domain-icon { font-size: 1.6rem; margin-bottom: 8px; }
+.domain-name { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 4px; }
+.domain-name-en { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 10px; }
+.domain-score { font-size: 1.8rem; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+.domain-card { box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.domain-card.green .domain-score { color: var(--green); }
+.domain-card.yellow .domain-score { color: var(--yellow); }
+.domain-card.orange .domain-score { color: var(--orange); }
+.domain-detail { font-size: 0.75rem; color: var(--text-dim); }
+.domain-sparkline { height: 40px; margin-top: 10px; }
+.domain-sparkline canvas { width: 100% !important; height: 40px !important; }
+
+/* ============ SECTION ============ */
+.section {
+  background: var(--navy-card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 28px 32px; margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--border);
+}
+.section-header h3 { font-size: 1.15rem; color: var(--text); }
+.section-header .section-badge {
+  font-size: 0.7rem; background: var(--maroon); color: white;
+  padding: 4px 12px; border-radius: 20px;
+}
+
+/* ============ 7 THEMES GRID ============ */
+.themes-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.theme-card {
+  background: rgba(0,0,0,0.01); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px; transition: all 0.2s;
+}
+.theme-card:hover { background: rgba(0,0,0,0.02); }
+.theme-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.theme-label { font-size: 0.8rem; color: var(--text-dim); }
+.theme-value { font-size: 1.3rem; font-weight: 700; }
+.theme-value.up { color: var(--green); }
+.theme-value.down { color: var(--red); }
+.theme-value.stable { color: var(--yellow); }
+.theme-trend { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+.theme-trend .arrow-up { color: var(--green); }
+.theme-trend .arrow-down { color: var(--red); }
+.theme-sparkline { height: 35px; margin-top: 8px; }
+.theme-sparkline canvas { width: 100% !important; height: 35px !important; }
+
+/* ============ NOWCAST ============ */
+.nowcast-grid { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; }
+.nowcast-chart { height: 280px; position: relative; }
+.nowcast-chart canvas { width: 100% !important; height: 280px !important; }
+.nowcast-sidebar {}
+.nowcast-number {
+  font-size: 3.5rem; font-weight: 800; color: var(--green);
+  line-height: 1; margin-bottom: 4px;
+}
+.nowcast-number span { font-size: 1.5rem; color: var(--text-dim); }
+.nowcast-label { font-size: 0.9rem; color: var(--text-dim); margin-bottom: 20px; }
+.nowcast-news { list-style: none; }
+.nowcast-news li {
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+  font-size: 0.82rem; display: flex; gap: 8px; align-items: flex-start;
+}
+.nowcast-news .impact { font-weight: 700; flex-shrink: 0; width: 50px; text-align: center; }
+.nowcast-news .impact.pos { color: var(--green); }
+.nowcast-news .impact.neg { color: var(--red); }
+
+/* ============ BACKTEST ============ */
+.backtest-chart { height: 300px; position: relative; }
+.backtest-chart canvas { width: 100% !important; height: 300px !important; }
+.backtest-narrative {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 20px;
+}
+.backtest-event {
+  background: rgba(0,0,0,0.02); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px; position: relative;
+}
+.backtest-event::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 8px 8px 0 0;
+}
+.backtest-event.green-ev::before { background: var(--green); }
+.backtest-event.yellow-ev::before { background: var(--yellow); }
+.backtest-event.orange-ev::before { background: var(--orange); }
+.backtest-event.red-ev::before { background: var(--red); }
+.backtest-event .ev-date { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; }
+.backtest-event .ev-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+.backtest-event .ev-desc { font-size: 0.75rem; color: var(--text-dim); }
+
+/* ============ SENTRA AI ============ */
+.sentra-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.sentra-chart { height: 200px; }
+.sentra-chart canvas { width: 100% !important; height: 200px !important; }
+.news-feed { max-height: 340px; overflow-y: auto; }
+.news-item {
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.news-item:last-child { border-bottom: none; }
+.news-score {
+  flex-shrink: 0; width: 44px; height: 44px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 700;
+}
+.news-score.high { background: var(--green-bg); color: var(--green); }
+.news-score.medium { background: var(--yellow-bg); color: var(--yellow); }
+.news-score.low { background: var(--red-bg); color: var(--red); }
+.news-content {}
+.news-headline { font-size: 0.85rem; font-weight: 500; margin-bottom: 4px; }
+.news-meta { font-size: 0.72rem; color: var(--text-muted); display: flex; gap: 12px; }
+.news-tag {
+  display: inline-block; font-size: 0.65rem; padding: 2px 8px;
+  border-radius: 10px; background: rgba(141, 27, 61, 0.1); color: var(--maroon);
+  margin-top: 4px;
+}
+
+/* ============ FOOTER ============ */
+.footer {
+  text-align: center; padding: 20px; color: var(--text-muted);
+  font-size: 0.75rem; border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+.footer .powered { color: var(--maroon); font-weight: 600; }
+
+/* ============ SOURCES ============ */
+.sources {
+  background: var(--navy-card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 28px 32px; margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.sources h3 { font-size: 1.15rem; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.sources-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.source-group h4 { font-size: 0.85rem; color: var(--gold); margin-bottom: 10px; }
+.source-group ul { list-style: none; }
+.source-group li {
+  font-size: 0.78rem; color: var(--text-dim); padding: 5px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  display: flex; align-items: baseline; gap: 8px;
+}
+.source-group li::before { content: ''; display: none; }
+.source-badge {
+  flex-shrink: 0; font-size: 0.6rem; font-weight: 700; padding: 2px 6px;
+  border-radius: 4px; text-transform: uppercase;
+}
+.source-badge.real { background: var(--green-bg); color: var(--green); }
+.source-badge.sim { background: var(--yellow-bg); color: var(--yellow); }
+.source-badge.hist { background: rgba(99,102,241,0.1); color: #6366F1; }
+.source-group a { color: var(--maroon); text-decoration: none; }
+.source-group a:hover { text-decoration: underline; }
+.sources-legend {
+  margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border);
+  display: flex; gap: 24px; font-size: 0.75rem; color: var(--text-muted);
+}
+.sources-legend span { display: flex; align-items: center; gap: 6px; }
+
+/* ============ ANIMATIONS ============ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-in { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; }
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #F1F5F9; }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--maroon); }
+</style>
+</head>
+<body dir="rtl">
+
+<!-- MOBILE BLOCK -->
+<div class="mobile-block">
+  <img src="https://sceai.gov.qa/assets/logo.jpg" alt="SCEAI">
+  <h2>هذا العرض مصمم لشاشات سطح المكتب</h2>
+  <p>Desktop Only — Please open on a larger screen</p>
+  <button onclick="navigator.clipboard.writeText(location.href)">نسخ الرابط</button>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-right">
+    <img src="https://sceai.gov.qa/assets/logo.jpg" alt="SCEAI Logo">
+    <div class="header-title">
+      <h1 id="headerTitle">نظام الإنذار المبكر الوطني — NEAF</h1>
+      <span class="subtitle" id="headerSubtitle">National Early Alert Framework — Prototype Dashboard</span>
+    </div>
+  </div>
+  <div class="header-left">
+    <span class="header-date" id="headerDate"></span>
+    <button class="lang-toggle" onclick="toggleLang()" id="langBtn">EN</button>
+  </div>
+</header>
+
+<!-- DASHBOARD -->
+<div class="dashboard">
+
+  <!-- RISK HERO -->
+  <div class="risk-hero animate-in">
+    <div class="risk-gauge">
+      <canvas id="riskGauge"></canvas>
+      <div class="risk-score-overlay">
+        <div class="risk-score-number" id="riskNumber">1.4</div>
+        <div class="risk-score-label" id="riskLabel">من 4.0</div>
+      </div>
+    </div>
+    <div class="risk-info">
+      <h2 id="riskTitle"><span class="status-dot" style="background:var(--yellow); box-shadow: 0 0 20px rgba(234,179,8,0.3);"></span><span data-ar="مستوى المخاطر: مراقبة نشطة" data-en="Risk Level: Active Watch">مستوى المخاطر: مراقبة نشطة</span></h2>
+      <p class="risk-desc" id="riskDesc" data-ar="مراقبة نشطة: مجال الهيدروكربونات مرتفع بسبب إغلاق مضيق هرمز. باقي المجالات ضمن النطاق الطبيعي." data-en="Active watch: Hydrocarbon domain elevated due to Hormuz Strait closure. Other domains within normal range.">مراقبة نشطة: مجال الهيدروكربونات مرتفع بسبب إغلاق مضيق هرمز. باقي المجالات ضمن النطاق الطبيعي.</p>
+      <div class="risk-meta">
+        <span id="riskUpdate" data-ar="آخر تحديث: اليوم 09:00" data-en="Last update: Today 09:00">آخر تحديث: اليوم 09:00</span>
+        <span>|</span>
+        <span data-ar="مصادر البيانات: 47 مؤشر | QSE: 10,093" data-en="Data sources: 47 indicators | QSE: 10,093">مصادر البيانات: 47 مؤشر | QSE: 10,093</span>
+        <span>|</span>
+        <span data-ar="دورة التحديث: كل 6 ساعات" data-en="Update cycle: Every 6 hours">دورة التحديث: كل 6 ساعات</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOMAIN CARDS -->
+  <div class="domains-grid">
+    <div class="domain-card yellow animate-in delay-1">
+      <div class="domain-icon">&#9981;</div>
+      <div class="domain-name" data-ar="هيدروكربونات" data-en="Hydrocarbon">هيدروكربونات</div>
+      <div class="domain-name-en">Hydrocarbon</div>
+      <div class="domain-score">1.8</div>
+      <div class="domain-detail" data-ar="برنت $104 | هرمز ⚠️" data-en="Brent $104 | Hormuz ⚠️">برنت $104 | هرمز ⚠️</div>
+      <div class="domain-sparkline"><canvas id="spark0"></canvas></div>
+    </div>
+    <div class="domain-card green animate-in delay-2">
+      <div class="domain-icon">&#127975;</div>
+      <div class="domain-name" data-ar="مالية حكومية" data-en="Fiscal">مالية حكومية</div>
+      <div class="domain-name-en">Fiscal</div>
+      <div class="domain-score">1.1</div>
+      <div class="domain-detail" data-ar="سعر التعادل مريح" data-en="Break-even comfortable">سعر التعادل مريح</div>
+      <div class="domain-sparkline"><canvas id="spark1"></canvas></div>
+    </div>
+    <div class="domain-card yellow animate-in delay-3">
+      <div class="domain-icon">&#127974;</div>
+      <div class="domain-name" data-ar="مالية" data-en="Financial">مالية</div>
+      <div class="domain-name-en">Financial</div>
+      <div class="domain-score">1.4</div>
+      <div class="domain-detail" data-ar="تضخم 2.51% | QSE 10,093" data-en="CPI 2.51% | QSE 10,093">تضخم 2.51% | QSE 10,093</div>
+      <div class="domain-sparkline"><canvas id="spark2"></canvas></div>
+    </div>
+    <div class="domain-card green animate-in delay-4">
+      <div class="domain-icon">&#127758;</div>
+      <div class="domain-name" data-ar="خارجية" data-en="External">خارجية</div>
+      <div class="domain-name-en">External</div>
+      <div class="domain-score">0.9</div>
+      <div class="domain-detail" data-ar="فائض QAR 14.1B" data-en="Surplus QAR 14.1B">فائض QAR 14.1B</div>
+      <div class="domain-sparkline"><canvas id="spark3"></canvas></div>
+    </div>
+    <div class="domain-card green animate-in delay-5">
+      <div class="domain-icon">&#128200;</div>
+      <div class="domain-name" data-ar="هيكلية" data-en="Structural">هيكلية</div>
+      <div class="domain-name-en">Structural</div>
+      <div class="domain-score">0.7</div>
+      <div class="domain-detail" data-ar="سكان 3.21M | +2.3%" data-en="Pop 3.21M | +2.3%">سكان 3.21M | +2.3%</div>
+      <div class="domain-sparkline"><canvas id="spark4"></canvas></div>
+    </div>
+  </div>
+
+  <!-- 7 THEMES -->
+  <div class="section animate-in delay-2">
+    <div class="section-header">
+      <h3 data-ar="المحاور السبعة — المؤشرات الكمية" data-en="Seven Themes — Quantitative Indicators">المحاور السبعة — المؤشرات الكمية</h3>
+      <span class="section-badge">Layer 1</span>
+    </div>
+    <div class="themes-grid" id="themesGrid"></div>
+  </div>
+
+  <!-- NOWCAST -->
+  <div class="section animate-in delay-3">
+    <div class="section-header">
+      <h3 data-ar="التقدير اللحظي للناتج المحلي — Nowcast" data-en="GDP Nowcast — Real-time Estimate">التقدير اللحظي للناتج المحلي — Nowcast</h3>
+      <span class="section-badge">Layer 4</span>
+    </div>
+    <div class="nowcast-grid">
+      <div class="nowcast-chart"><canvas id="nowcastChart"></canvas></div>
+      <div class="nowcast-sidebar">
+        <div class="nowcast-number">3.2<span>%</span></div>
+        <div class="nowcast-label" data-ar="تقدير Q4 2025 (الرسمي Q3: 2.9%)" data-en="Q4 2025 Estimate (Official Q3: 2.9%)">تقدير Q4 2025 (الرسمي Q3: 2.9%)</div>
+        <ul class="nowcast-news" id="nowcastNews"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- BACKTEST -->
+  <div class="section animate-in delay-4">
+    <div class="section-header">
+      <h3 data-ar="اختبار تاريخي — أزمة النفط 2014-2016" data-en="Backtest — 2014-2016 Oil Crisis">اختبار تاريخي — أزمة النفط 2014-2016</h3>
+      <span class="section-badge" data-ar="إثبات المفهوم" data-en="Proof of Concept">إثبات المفهوم</span>
+    </div>
+    <div class="backtest-chart"><canvas id="backtestChart"></canvas></div>
+    <div class="backtest-narrative" id="backtestNarrative"></div>
+  </div>
+
+  <!-- SENTRA AI LAYER -->
+  <div class="section animate-in delay-5">
+    <div class="section-header">
+      <h3 data-ar="الذكاء السردي — طبقة سنترا" data-en="Narrative Intelligence — Sentra Layer">الذكاء السردي — طبقة سنترا</h3>
+      <span class="section-badge">Layer 2</span>
+    </div>
+    <div class="sentra-grid">
+      <div>
+        <div class="sentra-chart"><canvas id="sentimentChart"></canvas></div>
+      </div>
+      <div class="news-feed" id="newsFeed"></div>
+    </div>
+  </div>
+
+  <!-- SOURCES -->
+  <div class="sources animate-in delay-5">
+    <h3 data-ar="مصادر البيانات والمنهجية" data-en="Data Sources & Methodology">مصادر البيانات والمنهجية</h3>
+    <div class="sources-grid">
+      <div class="source-group">
+        <h4 data-ar="بيانات حقيقية — مصادر رسمية" data-en="Real Data — Official Sources">بيانات حقيقية — مصادر رسمية</h4>
+        <ul>
+          <li><span class="source-badge real">R</span><span>GDP Growth (Q3 2025: 2.9% YoY) — <a href="https://www.npc.qa/en/statistics/" target="_blank">NPC Qatar / PSA</a></span></li>
+          <li><span class="source-badge real">R</span><span>GDP Q1 2025: 3.7%, Q4 2024: 6.1%, Q2 2025: 1.9% — <a href="https://tradingeconomics.com/qatar/gdp-growth-annual" target="_blank">TradingEconomics / PSA</a></span></li>
+          <li><span class="source-badge real">R</span><span>PMI (Feb 2026: 50.6) — <a href="https://www.qfc.qa/en/media-centre/insights/indicators" target="_blank">S&P Global / Qatar Financial Centre</a></span></li>
+          <li><span class="source-badge real">R</span><span>CPI/Inflation (Feb 2026: 2.51%) — <a href="https://tradingeconomics.com/qatar/inflation-cpi" target="_blank">TradingEconomics / QSA</a></span></li>
+          <li><span class="source-badge real">R</span><span>Brent Crude ($103.74, Mar 29 2026) — <a href="https://www.investing.com/commodities/brent-oil" target="_blank">Investing.com</a></span></li>
+          <li><span class="source-badge real">R</span><span>QSE Index (10,093, Mar 29 2026) — <a href="https://www.qe.com.qa/" target="_blank">Qatar Stock Exchange</a></span></li>
+          <li><span class="source-badge real">R</span><span>Population (3,214,609, Dec 2025, +2.3%) — <a href="https://thepeninsulaqatar.com/article/05/01/2026/qatar-population-increases-by-23-in-2025" target="_blank">PSA / Peninsula Qatar</a></span></li>
+          <li><span class="source-badge real">R</span><span>Trade Balance (QAR 14,065M surplus, Dec 2025) — <a href="https://tradingeconomics.com/qatar/balance-of-trade" target="_blank">TradingEconomics</a></span></li>
+          <li><span class="source-badge real">R</span><span>Interest Rate (4.35%, Jan 2026) — <a href="https://tradingeconomics.com/qatar/interest-rate" target="_blank">QCB / TradingEconomics</a></span></li>
+          <li><span class="source-badge real">R</span><span>Unemployment (0.1%, Dec 2024) — <a href="https://tradingeconomics.com/qatar/unemployment-rate" target="_blank">TradingEconomics</a></span></li>
+          <li><span class="source-badge real">R</span><span>Govt Debt/GDP (40.8%, Dec 2024) — <a href="https://tradingeconomics.com/qatar/government-debt-to-gdp" target="_blank">TradingEconomics</a></span></li>
+          <li><span class="source-badge real">R</span><span>Oil Production (1,322K bbl/d, Nov 2025) — <a href="https://tradingeconomics.com/qatar/crude-oil-production" target="_blank">TradingEconomics</a></span></li>
+          <li><span class="source-badge real">R</span><span>Hormuz Strait closure (since Mar 2, 2026) — <a href="https://www.cnbc.com/2026/03/26/oil-price-wti-brent-crude-iran-rejects-direct-us-trump-talks-hormuz.html" target="_blank">CNBC / Bloomberg</a></span></li>
+        </ul>
+      </div>
+      <div class="source-group">
+        <h4 data-ar="بيانات مقدرة وتاريخية" data-en="Simulated & Historical Data">بيانات مقدرة وتاريخية</h4>
+        <ul>
+          <li><span class="source-badge hist">H</span><span>Backtest Brent Prices (2013-2017) — <a href="https://tradingeconomics.com/commodity/brent-crude-oil" target="_blank">TradingEconomics historical</a></span></li>
+          <li><span class="source-badge hist">H</span><span>NEAF Alert Levels (backtest) — Simulated based on BIS credit-to-GDP gap methodology</span></li>
+          <li><span class="source-badge sim">S</span><span data-ar="مؤشر المخاطر المركب (NEAF Score) — محسوب من المؤشرات أعلاه" data-en="Composite Risk Score (NEAF Score) — Calculated from indicators above">مؤشر المخاطر المركب (NEAF Score) — محسوب من المؤشرات أعلاه</span></li>
+          <li><span class="source-badge sim">S</span><span data-ar="تقدير GDP اللحظي (Nowcast) — Bridge Model تجريبي" data-en="GDP Nowcast — Experimental Bridge Model">تقدير GDP اللحظي (Nowcast) — Bridge Model تجريبي</span></li>
+          <li><span class="source-badge sim">S</span><span data-ar="نقاط تحليل المشاعر — محاكاة منهجية EPU" data-en="Sentiment Analysis scores — Simulated using EPU methodology">نقاط تحليل المشاعر — محاكاة منهجية EPU</span></li>
+          <li><span class="source-badge sim">S</span><span data-ar="إشغال الفنادق — تقدير من تقارير هيئة السياحة" data-en="Hotel Occupancy — Estimated from QTA reports">إشغال الفنادق — تقدير من تقارير هيئة السياحة</span></li>
+          <li><span class="source-badge sim">S</span><span data-ar="أسعار العقارات — تقدير من تقارير السوق" data-en="Real Estate Prices — Estimated from market reports">أسعار العقارات — تقدير من تقارير السوق</span></li>
+          <li><span class="source-badge sim">S</span><span data-ar="عناوين الأخبار — توضيحية لقدرات الفلترة" data-en="News Headlines — Illustrative of filtering capabilities">عناوين الأخبار — توضيحية لقدرات الفلترة</span></li>
+        </ul>
+        <br>
+        <h4 data-ar="منهجيات مرجعية" data-en="Reference Methodologies">منهجيات مرجعية</h4>
+        <ul>
+          <li><span class="source-badge hist">H</span><span>NY Fed Staff Nowcast (Dynamic Factor Model) — <a href="https://www.newyorkfed.org/research/policy/nowcast" target="_blank">Federal Reserve Bank of New York</a></span></li>
+          <li><span class="source-badge hist">H</span><span>BIS Credit-to-GDP Gap — <a href="https://www.bis.org/statistics/c_gaps.htm" target="_blank">Bank for International Settlements</a></span></li>
+          <li><span class="source-badge hist">H</span><span>IMF Early Warning Exercise — <a href="https://www.imf.org/en/Publications/WP" target="_blank">IMF Working Papers</a></span></li>
+          <li><span class="source-badge hist">H</span><span>Singapore MAS Financial Stability Review — <a href="https://www.mas.gov.sg/publications/financial-stability-review" target="_blank">Monetary Authority of Singapore</a></span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="sources-legend">
+      <span><span class="source-badge real">R</span> <span data-ar="بيانات حقيقية موثقة" data-en="Verified real data">بيانات حقيقية موثقة</span></span>
+      <span><span class="source-badge sim">S</span> <span data-ar="بيانات مقدرة/محاكاة" data-en="Simulated/estimated data">بيانات مقدرة/محاكاة</span></span>
+      <span><span class="source-badge hist">H</span> <span data-ar="بيانات/منهجيات تاريخية" data-en="Historical data/methodologies">بيانات/منهجيات تاريخية</span></span>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span data-ar="نموذج تجريبي — مبني على بيانات عامة متاحة | " data-en="Prototype — Built on publicly available data | ">نموذج تجريبي — مبني على بيانات عامة متاحة | </span>
+  <span class="powered">Powered by Sentra Platform</span>
+  <span> | </span>
+  <span data-ar="المجلس الأعلى للشؤون الاقتصادية والاستثمار — دولة قطر" data-en="Supreme Council for Economic Affairs and Investment — State of Qatar">المجلس الأعلى للشؤون الاقتصادية والاستثمار — دولة قطر</span>
+</div>
+
+<script>
+// ============ DATA ============
+// DATA SOURCES KEY:
+// [R] = Real data from public sources (verified Mar 2026)
+// [S] = Simulated/estimated (realistic but not from official source)
+// [H] = Historical real data (verified from archives)
+
+const DATA = {
+  themes: [
+    { icon: '&#128747;', ar: 'السياحة', en: 'Tourism', value: '72%', trend: 'up', change: '+4.2%', color: 'up',
+      sparkline: [58,60,62,65,63,67,68,70,69,71,72,72], src: 'S' },  // [S] Hotel occupancy estimate
+    { icon: '&#127974;', ar: 'الاستقرار المالي', en: 'Financial Stability', value: '2.51%', trend: 'up', change: 'CPI', color: 'stable',
+      sparkline: [0.73,0.82,0.95,1.11,1.25,1.40,1.55,1.70,1.85,1.95,2.28,2.51], src: 'R' },  // [R] CPI Feb 2026 = 2.51% (TradingEconomics/QSA)
+    { icon: '&#127975;', ar: 'الاستقرار المالي الحكومي', en: 'Fiscal Stability', value: '$104', trend: 'up', change: 'Brent', color: 'stable',
+      sparkline: [72,74,76,78,80,82,85,88,92,96,100,104], src: 'R' },  // [R] Brent $103.74 Mar 29 2026 (Investing.com)
+    { icon: '&#128674;', ar: 'اللوجستيات', en: 'Logistics & Supply Chain', value: '14.1B', trend: 'up', change: 'QAR فائض', color: 'up',
+      sparkline: [10.2,11.0,11.5,12.0,12.5,13.0,13.2,13.5,13.8,14.0,14.1,14.1], src: 'R' },  // [R] Trade balance QAR 14,065M Dec 2025 (TradingEconomics)
+    { icon: '&#128101;', ar: 'سوق العمل', en: 'Labour Market', value: '3.21M', trend: 'up', change: '+2.3%', color: 'up',
+      sparkline: [2.96,2.98,3.00,3.02,3.04,3.06,3.08,3.10,3.12,3.14,3.18,3.21], src: 'R' },  // [R] Pop 3,214,609 Dec 2025 (+2.3% YoY) (Peninsula Qatar/PSA)
+    { icon: '&#9881;', ar: 'التصنيع', en: 'Manufacturing', value: '50.6', trend: 'up', change: 'PMI', color: 'up',
+      sparkline: [49.8,50.2,50.8,51.0,52.0,51.4,51.5,52.9,52.9,50.2,50.4,50.6], src: 'R' },  // [R] PMI Feb 2026 = 50.6 (S&P Global/QFC)
+    { icon: '&#127960;', ar: 'العقارات', en: 'Real Estate', value: '-1.8%', trend: 'down', change: 'أسعار', color: 'down',
+      sparkline: [3.2,2.8,2.2,1.5,0.8,0.2,-0.5,-0.8,-1.2,-1.5,-1.8,-1.8], src: 'S' },  // [S] RE price estimate based on market reports
+  ],
+  nowcastNews: [
+    { impact: '+0.4', pos: true, ar: 'نمو GDP السنوي 2.9% بالربع الثالث 2025 — 15 من 17 نشاط اقتصادي إيجابي', en: 'GDP annual growth 2.9% in Q3 2025 — 15 of 17 activities positive', src: 'R' },
+    { impact: '+0.3', pos: true, ar: 'القطاع غير النفطي يشكل 63.6% من GDP — أعلى حصة تاريخياً', en: 'Non-hydrocarbon sector at 63.6% of GDP — highest ever share', src: 'R' },
+    { impact: '-0.3', pos: false, ar: 'توترات مضيق هرمز: إغلاق فعلي منذ 2 مارس — 17.8 مليون برميل/يوم معطلة', en: 'Hormuz Strait effectively closed since Mar 2 — 17.8M bbl/day disrupted', src: 'R' },
+    { impact: '+0.2', pos: true, ar: 'تدفق سكاني +2.3% في 2025 — إشارة مشاريع جديدة ونشاط اقتصادي', en: 'Population inflow +2.3% in 2025 — new projects and activity signal', src: 'R' },
+    { impact: '-0.1', pos: false, ar: 'التضخم يرتفع لـ 2.51% فبراير 2026 — أعلى مستوى منذ 2023', en: 'Inflation rises to 2.51% Feb 2026 — highest since 2023', src: 'R' },
+  ],
+  backtest: {
+    labels: ['Q1\'13','Q2\'13','Q3\'13','Q4\'13','Q1\'14','Q2\'14','Q3\'14','Q4\'14','Q1\'15','Q2\'15','Q3\'15','Q4\'15','Q1\'16','Q2\'16','Q3\'16','Q4\'16','Q1\'17'],
+    brent:  [113,103,110,111,108,110,102,77,55,62,50,44,34,47,46,50,55],
+    alert:  [0,0,0,0,0,0.5,1,1.5,2,2.5,2.8,3,3.2,2.8,2.5,2,1.5],
+  },
+  backtestEvents: [
+    { date: 'Q2 2014', level: 'yellow-ev', ar: 'إنذار أصفر', en: 'Yellow Alert',
+      descAr: 'تباطؤ نمو الائتمان الخاص. العقود الآجلة تشير لانخفاض.', descEn: 'Private credit growth slowing. Futures curve pointing down.' },
+    { date: 'Q4 2014', level: 'orange-ev', ar: 'إنذار برتقالي', en: 'Orange Alert',
+      descAr: 'برنت انهار من $110 لـ $77. ثلاثة مجالات في منطقة التحذير.', descEn: 'Brent collapsed from $110 to $77. Three domains in warning zone.' },
+    { date: 'Q1 2016', level: 'red-ev', ar: 'إنذار أحمر', en: 'Red Alert',
+      descAr: 'برنت وصل $34. أزمة شاملة. النظام كان سينبه قبل 18 شهر.', descEn: 'Brent hit $34. Full crisis. System would have alerted 18 months early.' },
+    { date: 'Q4 2016', level: 'green-ev', ar: 'عودة للأخضر', en: 'Return to Green',
+      descAr: 'اتفاق OPEC+ لخفض الإنتاج. تعافي تدريجي.', descEn: 'OPEC+ production cut agreement. Gradual recovery.' },
+  ],
+  newsItems: [
+    { score: 92, level: 'high', ar: 'قطر للطاقة توقع عقود LNG جديدة مع الصين لمدة 27 عاماً', en: 'QatarEnergy signs 27-year LNG deals with China',
+      source: 'Reuters', time: '2h', tagAr: 'هيدروكربونات', tagEn: 'Hydrocarbon' },
+    { score: 87, level: 'high', ar: 'البنك المركزي: نمو الائتمان المصرفي يتسارع إلى 9.2% سنوياً', en: 'Central Bank: Banking credit growth accelerates to 9.2% annually',
+      source: 'QNA', time: '5h', tagAr: 'مالية', tagEn: 'Financial' },
+    { score: 74, level: 'medium', ar: 'صندوق النقد الدولي يتوقع نمو قطر 5.3% في 2026', en: 'IMF projects Qatar growth at 5.3% in 2026',
+      source: 'IMF', time: '1d', tagAr: 'اقتصاد كلي', tagEn: 'Macro' },
+    { score: 68, level: 'medium', ar: 'تراجع أسعار العقارات في لوسيل بنسبة 4% خلال الربع الأخير', en: 'Lusail property prices decline 4% in latest quarter',
+      source: 'PropertyFinder', time: '2d', tagAr: 'عقارات', tagEn: 'Real Estate' },
+    { score: 95, level: 'high', ar: 'مضيق هرمز مغلق فعلياً منذ 2 مارس — 17.8 مليون برميل/يوم معطلة', en: 'Hormuz Strait effectively closed since Mar 2 — 17.8M bbl/day disrupted',
+      source: 'CNBC/Bloomberg', time: '27d', tagAr: 'جيوسياسي حرج', tagEn: 'Critical Geopolitical' },
+    { score: 82, level: 'high', ar: 'مشروع توسعة حقل الشمال: المرحلة الثانية تبدأ بقيمة $28.7 مليار', en: 'North Field expansion Phase 2 begins — $28.7B investment',
+      source: 'MEED', time: '4d', tagAr: 'مشاريع', tagEn: 'Projects' },
+  ],
+  sentiment: {
+    labels: ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],
+    positive: [62,58,65,60,63,67,64,68,66,70,72,71],
+    negative: [18,22,15,20,17,13,16,12,14,10,8,9],
+    neutral:  [20,20,20,20,20,20,20,20,20,20,20,20],
+  },
+  sparklines: [
+    [0.5,0.5,0.6,0.6,0.7,0.7,0.8,0.9,1.2,1.5,1.7,1.8],  // Hydrocarbon rising due to Hormuz
+    [1.0,1.05,1.1,1.08,1.12,1.15,1.1,1.08,1.12,1.1,1.1,1.1],
+    [0.9,0.95,1.0,1.1,1.15,1.2,1.25,1.3,1.35,1.38,1.4,1.4],
+    [1.1,1.05,1.0,0.95,0.9,0.92,0.88,0.85,0.9,0.88,0.9,0.9],
+    [0.8,0.78,0.75,0.72,0.7,0.68,0.7,0.72,0.7,0.68,0.7,0.7],
+  ]
+};
+
+// ============ LANGUAGE ============
+let lang = 'ar';
+
+function toggleLang() {
+  lang = lang === 'ar' ? 'en' : 'ar';
+  document.documentElement.lang = lang;
+  document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.getElementById('langBtn').textContent = lang === 'ar' ? 'EN' : 'عربي';
+  document.querySelectorAll('[data-ar]').forEach(el => {
+    el.textContent = el.getAttribute('data-' + lang);
+  });
+  renderThemes();
+  renderNowcastNews();
+  renderBacktestNarrative();
+  renderNewsFeed();
+}
+
+// ============ DATE ============
+document.getElementById('headerDate').textContent = new Date().toLocaleDateString('ar-QA', {
+  weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+});
+
+// ============ RISK GAUGE ============
+function drawRiskGauge() {
+  const ctx = document.getElementById('riskGauge').getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [1.4, 2.6],
+        backgroundColor: ['#CA8A04', 'rgba(0,0,0,0.06)'],
+        borderWidth: 0,
+        circumference: 270,
+        rotation: 225,
+      }]
+    },
+    options: {
+      cutout: '78%',
+      responsive: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      animation: { animateRotate: true, duration: 1500 }
+    }
+  });
+}
+
+// ============ SPARKLINES ============
+function drawSparkline(canvasId, data, color) {
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: data.map((_, i) => i),
+      datasets: [{
+        data: data,
+        borderColor: color,
+        borderWidth: 2,
+        fill: true,
+        backgroundColor: color.replace(')', ', 0.15)').replace('rgb', 'rgba'),
+        pointRadius: 0,
+        tension: 0.4,
+      }]
+    },
+    options: {
+      responsive: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      scales: { x: { display: false }, y: { display: false } },
+      animation: { duration: 1000 }
+    }
+  });
+}
+
+// ============ THEMES ============
+function renderThemes() {
+  const grid = document.getElementById('themesGrid');
+  grid.innerHTML = DATA.themes.map((t, i) => `
+    <div class="theme-card">
+      <div class="theme-top">
+        <span class="theme-label">${t.icon} ${lang === 'ar' ? t.ar : t.en}</span>
+        <span class="theme-value ${t.color}">${t.value}</span>
+      </div>
+      <div class="theme-trend">
+        <span class="${t.trend === 'up' ? 'arrow-up' : t.trend === 'down' ? 'arrow-down' : ''}">${t.trend === 'up' ? '&#9650;' : t.trend === 'down' ? '&#9660;' : '&#9644;'}</span>
+        ${t.change}
+      </div>
+      <div class="theme-sparkline"><canvas id="theme${i}"></canvas></div>
+    </div>
+  `).join('');
+  DATA.themes.forEach((t, i) => {
+    const c = t.color === 'up' ? 'rgb(34,197,94)' : t.color === 'down' ? 'rgb(239,68,68)' : 'rgb(234,179,8)';
+    setTimeout(() => drawSparkline('theme' + i, t.sparkline, c), 50);
+  });
+}
+
+// ============ NOWCAST ============
+function drawNowcast() {
+  const ctx = document.getElementById('nowcastChart').getContext('2d');
+  // [R] Real Qatar GDP YoY growth rates from TradingEconomics/PSA/NPC
+  const quarters = ['Q3\'24','Q4\'24','Q1\'25','Q2\'25','Q3\'25','Q4\'25 (est)'];
+  const official = [2.0, 6.1, 3.7, 1.9, 2.9, null];   // [R] All verified from PSA/NPC/TradingEconomics
+  const nowcast  = [1.9, 5.8, 3.5, 2.0, 2.8, 3.2];    // [S] Simulated nowcast (tracks official closely)
+  const upper    = [2.4, 6.5, 4.1, 2.5, 3.4, 4.0];    // [S] Confidence band
+  const lower    = [1.4, 5.1, 2.9, 1.5, 2.2, 2.4];    // [S] Confidence band
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: quarters,
+      datasets: [
+        { label: lang === 'ar' ? 'رسمي' : 'Official', data: official, borderColor: '#C9A84C', borderWidth: 3, pointRadius: 5, pointBackgroundColor: '#C9A84C', spanGaps: false },
+        { label: 'Nowcast', data: nowcast, borderColor: '#22C55E', borderWidth: 2, borderDash: [6,3], pointRadius: 4, pointBackgroundColor: '#22C55E' },
+        { label: 'Upper', data: upper, borderColor: 'transparent', backgroundColor: 'rgba(34,197,94,0.08)', fill: '+1', pointRadius: 0 },
+        { label: 'Lower', data: lower, borderColor: 'transparent', backgroundColor: 'rgba(34,197,94,0.08)', fill: '-1', pointRadius: 0 },
+      ]
+    },
+    options: {
+      responsive: false,
+      plugins: {
+        legend: { position: 'top', labels: { color: '#64748B', filter: (item) => item.text !== 'Upper' && item.text !== 'Lower' } },
+        tooltip: { mode: 'index', intersect: false }
+      },
+      scales: {
+        x: { ticks: { color: '#94A3B8' }, grid: { color: 'rgba(0,0,0,0.06)' } },
+        y: { ticks: { color: '#94A3B8', callback: v => v + '%' }, grid: { color: 'rgba(0,0,0,0.06)' }, min: 0 }
+      }
+    }
+  });
+}
+
+function renderNowcastNews() {
+  document.getElementById('nowcastNews').innerHTML = DATA.nowcastNews.map(n => `
+    <li>
+      <span class="impact ${n.pos ? 'pos' : 'neg'}">${n.impact}%</span>
+      <span>${lang === 'ar' ? n.ar : n.en}</span>
+    </li>
+  `).join('');
+}
+
+// ============ BACKTEST ============
+function drawBacktest() {
+  const ctx = document.getElementById('backtestChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: DATA.backtest.labels,
+      datasets: [
+        {
+          label: lang === 'ar' ? 'سعر برنت ($)' : 'Brent Price ($)',
+          data: DATA.backtest.brent,
+          borderColor: '#C9A84C', borderWidth: 2.5, pointRadius: 3, pointBackgroundColor: '#C9A84C',
+          yAxisID: 'y',
+          tension: 0.3,
+        },
+        {
+          label: lang === 'ar' ? 'مستوى إنذار NEAF' : 'NEAF Alert Level',
+          data: DATA.backtest.alert,
+          borderColor: '#EF4444', borderWidth: 2, borderDash: [5,3],
+          backgroundColor: 'rgba(239,68,68,0.1)', fill: true,
+          pointRadius: 3, pointBackgroundColor: (ctx) => {
+            const v = ctx.raw;
+            if (v >= 2.5) return '#EF4444';
+            if (v >= 1.5) return '#F97316';
+            if (v >= 0.5) return '#EAB308';
+            return '#22C55E';
+          },
+          yAxisID: 'y1',
+          tension: 0.3,
+        }
+      ]
+    },
+    options: {
+      responsive: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'top', labels: { color: '#64748B' } },
+        tooltip: { mode: 'index', intersect: false }
+      },
+      scales: {
+        x: { ticks: { color: '#94A3B8' }, grid: { color: 'rgba(0,0,0,0.06)' } },
+        y: { position: lang === 'ar' ? 'right' : 'left', ticks: { color: '#C9A84C', callback: v => '$'+v }, grid: { color: 'rgba(0,0,0,0.06)' }, min: 20, max: 130 },
+        y1: { position: lang === 'ar' ? 'left' : 'right', ticks: { color: '#EF4444', callback: v => {
+          if (v === 0) return lang === 'ar' ? 'أخضر' : 'Green';
+          if (v === 1) return lang === 'ar' ? 'أصفر' : 'Yellow';
+          if (v === 2) return lang === 'ar' ? 'برتقالي' : 'Orange';
+          if (v === 3) return lang === 'ar' ? 'أحمر' : 'Red';
+          return '';
+        }}, grid: { drawOnChartArea: false }, min: 0, max: 4 }
+      }
+    }
+  });
+}
+
+function renderBacktestNarrative() {
+  document.getElementById('backtestNarrative').innerHTML = DATA.backtestEvents.map(e => `
+    <div class="backtest-event ${e.level}">
+      <div class="ev-date">${e.date}</div>
+      <div class="ev-title">${lang === 'ar' ? e.ar : e.en}</div>
+      <div class="ev-desc">${lang === 'ar' ? e.descAr : e.descEn}</div>
+    </div>
+  `).join('');
+}
+
+// ============ SENTIMENT ============
+function drawSentiment() {
+  const ctx = document.getElementById('sentimentChart').getContext('2d');
+  const labels = lang === 'ar' ? DATA.sentiment.labels : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        { label: lang === 'ar' ? 'إيجابي' : 'Positive', data: DATA.sentiment.positive, borderColor: '#22C55E', backgroundColor: 'rgba(34,197,94,0.15)', fill: true, tension: 0.4, pointRadius: 2 },
+        { label: lang === 'ar' ? 'سلبي' : 'Negative', data: DATA.sentiment.negative, borderColor: '#EF4444', backgroundColor: 'rgba(239,68,68,0.15)', fill: true, tension: 0.4, pointRadius: 2 },
+      ]
+    },
+    options: {
+      responsive: false,
+      plugins: { legend: { position: 'top', labels: { color: '#64748B' } } },
+      scales: {
+        x: { ticks: { color: '#94A3B8', maxRotation: 0 }, grid: { color: 'rgba(0,0,0,0.06)' } },
+        y: { ticks: { color: '#94A3B8', callback: v => v + '%' }, grid: { color: 'rgba(0,0,0,0.06)' }, min: 0, max: 100 }
+      }
+    }
+  });
+}
+
+// ============ NEWS FEED ============
+function renderNewsFeed() {
+  document.getElementById('newsFeed').innerHTML = DATA.newsItems.map(n => `
+    <div class="news-item">
+      <div class="news-score ${n.level}">${n.score}</div>
+      <div class="news-content">
+        <div class="news-headline">${lang === 'ar' ? n.ar : n.en}</div>
+        <div class="news-meta">
+          <span>${n.source}</span>
+          <span>${n.time}</span>
+        </div>
+        <span class="news-tag">${lang === 'ar' ? n.tagAr : n.tagEn}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============ INIT ============
+function init() {
+  drawRiskGauge();
+  DATA.sparklines.forEach((d, i) => {
+    const colors = ['rgb(34,197,94)','rgb(34,197,94)','rgb(234,179,8)','rgb(34,197,94)','rgb(34,197,94)'];
+    drawSparkline('spark' + i, d, colors[i]);
+  });
+  renderThemes();
+  drawNowcast();
+  renderNowcastNews();
+  drawBacktest();
+  renderBacktestNarrative();
+  drawSentiment();
+  renderNewsFeed();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
