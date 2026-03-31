@@ -2627,10 +2627,13 @@ async function fetchNarrativeIntelligence() {
     'supply chain investment factory billion Middle East GCC',
   ];
   try {
-    const results = await Promise.all(queries.map(q =>
-      fetch(`https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(q)}&mode=ArtList&maxrecords=4&format=json&TIMESPAN=1440`, { mode: 'cors' })
-        .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-    ));
+    // Use CORS proxy since GDELT API doesn't set CORS headers
+    const PROXY = 'https://api.allorigins.win/raw?url=';
+    const results = await Promise.all(queries.map(q => {
+      const gdeltUrl = `https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(q)}&mode=ArtList&maxrecords=4&format=json&TIMESPAN=1440`;
+      return fetch(PROXY + encodeURIComponent(gdeltUrl))
+        .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+    }));
 
     const allArticles = results.flatMap(r => (r.articles || []).slice(0, 3));
     const scored = allArticles
