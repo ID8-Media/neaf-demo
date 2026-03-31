@@ -438,6 +438,25 @@ body[dir="ltr"] .hero-note { border-right: none; border-left: 3px solid var(--ma
   margin-top: 16px; padding-top: 10px;
   border-top: 1px solid var(--border);
 }
+/* ============ LIVE NARRATIVE INTELLIGENCE FEED ============ */
+.narrative-live-panel { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.nlp-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: rgba(0,0,0,0.02); border-bottom: 1px solid var(--border); }
+.live-indicator { display: inline-flex; align-items: center; gap: 5px; font-size: 0.65rem; font-weight: 700; color: var(--green); }
+.live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse-green 1.5s infinite; flex-shrink: 0; }
+.nlp-item { display: flex; gap: 14px; padding: 13px 16px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+.nlp-item:last-child { border-bottom: none; }
+.nlp-item:hover { background: rgba(0,0,0,0.015); }
+.nlp-level { flex-shrink: 0; width: 60px; padding: 4px 0; border-radius: 20px; text-align: center; font-size: 0.6rem; font-weight: 800; line-height: 1.5; }
+.nlp-level.high { background: rgba(220,38,38,0.08); color: #DC2626; border: 1px solid rgba(220,38,38,0.2); }
+.nlp-level.med { background: rgba(234,179,8,0.1); color: var(--yellow); border: 1px solid rgba(234,179,8,0.3); }
+.nlp-level.opp { background: rgba(22,163,74,0.08); color: var(--green); border: 1px solid rgba(22,163,74,0.2); }
+.nlp-body { flex: 1; min-width: 0; }
+.nlp-headline { font-size: 0.8rem; font-weight: 600; color: var(--text); margin-bottom: 5px; line-height: 1.4; }
+.nlp-chain { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 5px; }
+.nlp-chain-item { background: rgba(141,27,61,0.05); color: var(--maroon); padding: 2px 8px; border-radius: 10px; font-size: 0.62rem; font-weight: 600; }
+.nlp-meta { font-size: 0.62rem; color: var(--text-muted); }
+.nlp-meta a { color: inherit; }
+
 .sec-sources summary {
   cursor: pointer; list-style: none; user-select: none;
   display: inline-flex; align-items: center; gap: 6px;
@@ -1336,10 +1355,24 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
       </div>
       <div class="news-feed" id="newsFeed"></div>
     </div>
+  <!-- GDELT Live Narrative Intelligence Feed -->
+  <div class="narrative-live-panel" style="margin-top:20px;">
+    <div class="nlp-header">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-weight:700;font-size:0.82rem;" data-ar="🧠 الذكاء السردي المباشر" data-en="🧠 Live Narrative Intelligence">🧠 الذكاء السردي المباشر</span>
+        <span class="live-indicator"><span class="live-dot"></span><span id="liveStatus" data-ar="جاري التحديث..." data-en="Updating...">جاري التحديث...</span></span>
+      </div>
+      <div style="font-size:0.63rem;color:var(--text-muted);" data-ar="المصدر: GDELT [R] · تصنيف القطاع: خوارزمية [S] · يُحدَّث كل 60 ثانية" data-en="Source: GDELT API [R] · Sector scoring: algorithm [S] · Refreshes every 60s">GDELT API [R] · Sector: algorithm [S] · 60s refresh</div>
+    </div>
+    <div id="narrativeFeed"><div style="padding:20px;text-align:center;color:var(--text-muted);font-size:0.78rem;" data-ar="جاري جلب الأخبار العالمية المباشرة..." data-en="Fetching live global news...">جاري جلب الأخبار العالمية المباشرة...</div></div>
+  </div>
+
   <details class="sec-sources">
     <summary data-ar="📋 المصادر المستخدمة في هذا القسم" data-en="📋 Data sources for this section">📋 المصادر المستخدمة في هذا القسم</summary>
     <div class="src-chips">
       <span class="src-chip"><span class="sbadge r">R</span> MOFA — Deployed production system</span>
+      <a class="src-chip" href="https://www.gdeltproject.org/" target="_blank"><span class="sbadge r">R</span> GDELT API — Global event data</a>
+      <a class="src-chip" href="https://www.matteoiacoviello.com/ai_gpr.html" target="_blank"><span class="sbadge r">R</span> AI-GPR Index — SF Fed (Mar 2026)</a>
       <a class="src-chip" href="https://www.cnbc.com" target="_blank"><span class="sbadge r">R</span> CNBC / Bloomberg / Reuters feeds</span></a>
       <a class="src-chip" href="https://tradingeconomics.com/commodity/baltic" target="_blank"><span class="sbadge r">R</span> Baltic Dry Index 2,001 — TradingEconomics</a>
       <span class="src-chip"><span class="sbadge s">S</span> Sentiment scores — EPU methodology</span>
@@ -2493,6 +2526,130 @@ function animateAiChain() {
   }, 900);
 }
 
+// ============ GDELT LIVE NARRATIVE INTELLIGENCE ============
+
+const NEAF_SECTOR_MAP = {
+  hydrocarbon: ['LNG','gas','energy','oil','crude','pipeline','Hormuz','QatarEnergy','petrochemical','carbon','fuel'],
+  labour: ['wage','minimum wage','labor','labour','workers','Philippines','Nepal','Bangladesh','Pakistan','migration','DMW','remittance','workforce'],
+  financial: ['inflation','interest rate','Fed','Federal Reserve','currency','exchange rate','credit','banking','sukuk','bond','debt'],
+  tourism: ['tourism','hotel','travel','airport','hospitality','arrivals','Doha','visitor','booking'],
+  logistics: ['supply chain','shipping','freight','port','container','tariff','trade','customs','transit'],
+  geopolitical: ['war','sanctions','conflict','military','geopolit','Ukraine','Russia','Iran','Gaza','Taiwan','nuclear'],
+};
+
+const SECTOR_LABELS_AR = { hydrocarbon:'هيدروكربونات', labour:'سوق العمل', financial:'مالية', tourism:'سياحة', logistics:'لوجستيات', geopolitical:'جيوسياسي' };
+const SECTOR_LABELS_EN = { hydrocarbon:'Hydrocarbon', labour:'Labour Market', financial:'Financial', tourism:'Tourism', logistics:'Logistics', geopolitical:'Geopolitical' };
+const LEAD_WINDOWS = {
+  hydrocarbon: { ar:'2-4 أشهر', en:'2–4 months' }, labour: { ar:'6-8 أسابيع', en:'6–8 weeks' },
+  financial: { ar:'4-8 أسابيع', en:'4–8 weeks' }, tourism: { ar:'4-8 أسابيع', en:'4–8 weeks' },
+  logistics: { ar:'6-8 أسابيع', en:'6–8 weeks' }, geopolitical: { ar:'3-4 أشهر', en:'3–4 months' },
+};
+
+// Fallback articles shown if GDELT is unreachable (CORS or network)
+const GDELT_FALLBACK = [
+  { title:'Philippines TUCP proposes minimum wage hike for overseas workers in Gulf', sector:'labour', impact:'high', src:'Fallback hardcoded [S]', url:null },
+  { title:'European energy storage mandate accelerated — LNG demand outlook raised for 2026', sector:'hydrocarbon', impact:'opp', src:'Fallback hardcoded [S]', url:null },
+  { title:'US tariff reshaping reshaping GCC trade flows — Hamad Port transit volumes surge', sector:'logistics', impact:'med', src:'Fallback hardcoded [S]', url:null },
+  { title:'QatarEnergy signs new long-term LNG contracts with European buyers ahead of winter', sector:'hydrocarbon', impact:'opp', src:'Fallback hardcoded [S]', url:null },
+  { title:'Bangladesh government considers temporary freeze on Gulf worker permits', sector:'labour', impact:'high', src:'Fallback hardcoded [S]', url:null },
+  { title:'Supply chain investment: $3B semiconductor packaging plant announced for Malaysia', sector:'logistics', impact:'opp', src:'Fallback hardcoded [S]', url:null },
+];
+
+function gdeltSectorScore(text) {
+  const lower = text.toLowerCase();
+  let maxHits = 0, best = 'geopolitical';
+  for (const [s, kws] of Object.entries(NEAF_SECTOR_MAP)) {
+    const hits = kws.filter(k => lower.includes(k.toLowerCase())).length;
+    if (hits > maxHits) { maxHits = hits; best = s; }
+  }
+  return best;
+}
+
+function gdeltImpactScore(text) {
+  const lower = text.toLowerCase();
+  const highWords = ['crisis','surge','collapse','sanctions','shutdown','closure','ban','warning','alert','freeze','explosion','conflict','attack'];
+  const oppWords = ['opportunity','investment','deal','agreement','growth','expansion','signs','contract','new factory','new plant'];
+  if (highWords.some(w => lower.includes(w))) return 'high';
+  if (oppWords.some(w => lower.includes(w))) return 'opp';
+  return 'med';
+}
+
+function renderNarrativeFeed(items, isLive) {
+  const statusEl = document.getElementById('liveStatus');
+  if (statusEl) {
+    const ts = new Date().toLocaleTimeString(lang === 'ar' ? 'ar-QA' : 'en-GB', {hour:'2-digit',minute:'2-digit'});
+    if (isLive) {
+      statusEl.setAttribute('data-ar', 'مباشر — ' + ts);
+      statusEl.setAttribute('data-en', 'Live — ' + ts);
+      statusEl.textContent = lang === 'ar' ? 'مباشر — ' + ts : 'Live — ' + ts;
+      statusEl.style.color = 'var(--green)';
+    } else {
+      statusEl.setAttribute('data-ar', 'بيانات احتياطية [S]');
+      statusEl.setAttribute('data-en', 'Fallback data [S]');
+      statusEl.textContent = lang === 'ar' ? 'بيانات احتياطية [S]' : 'Fallback data [S]';
+      statusEl.style.color = 'var(--yellow)';
+    }
+  }
+
+  const feed = document.getElementById('narrativeFeed');
+  if (!feed) return;
+  feed.innerHTML = items.slice(0, 6).map(item => {
+    const sector = item.sector || 'geopolitical';
+    const impact = item.impact || 'med';
+    const impactLabel = impact === 'high'
+      ? (lang === 'ar' ? '🔴 خطر عالي' : '🔴 HIGH RISK')
+      : impact === 'opp'
+      ? (lang === 'ar' ? '🟢 فرصة' : '🟢 OPPORTUNITY')
+      : (lang === 'ar' ? '🟡 متوسط' : '🟡 MEDIUM');
+    const sectorLabel = lang === 'ar' ? SECTOR_LABELS_AR[sector] : SECTOR_LABELS_EN[sector];
+    const win = LEAD_WINDOWS[sector] || LEAD_WINDOWS.geopolitical;
+    const winLabel = lang === 'ar' ? win.ar : win.en;
+    const linkHtml = item.url ? ` — <a href="${item.url}" target="_blank" style="color:var(--maroon);">↗ ${lang === 'ar' ? 'المصدر' : 'Source'}</a>` : '';
+    return `<div class="nlp-item">
+      <div class="nlp-level ${impact}">${impactLabel}</div>
+      <div class="nlp-body">
+        <div class="nlp-headline">${item.title}</div>
+        <div class="nlp-chain">
+          <span class="nlp-chain-item">${lang === 'ar' ? 'القطاع:' : 'Sector:'} ${sectorLabel}</span>
+          <span class="nlp-chain-item">${lang === 'ar' ? 'نافذة الإنذار:' : 'Warning window:'} ${winLabel}</span>
+          <span class="nlp-chain-item" style="background:rgba(141,27,61,0.08);">${lang === 'ar' ? '→ أثر على قطر: محتمل' : '→ Qatar impact: potential'}</span>
+        </div>
+        <div class="nlp-meta">${item.src || 'GDELT [R]'}${linkHtml}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function fetchNarrativeIntelligence() {
+  const queries = [
+    'Qatar economy energy LNG Gulf trade',
+    'Philippines Nepal Bangladesh India Pakistan wage labor workers policy',
+    'supply chain investment factory billion Middle East GCC',
+  ];
+  try {
+    const results = await Promise.all(queries.map(q =>
+      fetch(`https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(q)}&mode=ArtList&maxrecords=4&format=json&TIMESPAN=1440`, { mode: 'cors' })
+        .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    ));
+
+    const allArticles = results.flatMap(r => (r.articles || []).slice(0, 3));
+    const scored = allArticles
+      .filter(a => a.title && a.title.length > 20)
+      .map(a => ({
+        title: a.title,
+        url: a.url,
+        sector: gdeltSectorScore(a.title),
+        impact: gdeltImpactScore(a.title),
+        src: `GDELT [R] — ${a.domain || 'news source'}`,
+      }));
+
+    renderNarrativeFeed(scored.length >= 3 ? scored : GDELT_FALLBACK, scored.length >= 3);
+  } catch (e) {
+    console.log('GDELT:', e.message, '— fallback');
+    renderNarrativeFeed(GDELT_FALLBACK, false);
+  }
+}
+
 // ============ SECTION NAV — REORDER + SCROLL SPY + PRESENTATION MODE ============
 
 function reorderSections() {
@@ -2587,6 +2744,9 @@ function init() {
   animateAiChain();
   // Init nav after sections are reordered
   initScrollSpy();
+  // Live GDELT narrative feed
+  fetchNarrativeIntelligence();
+  setInterval(fetchNarrativeIntelligence, 60000);
 }
 
 document.addEventListener('DOMContentLoaded', init);
