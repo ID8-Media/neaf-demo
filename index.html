@@ -1222,6 +1222,7 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
     <div class="backtest-tabs">
       <button class="backtest-tab active" onclick="switchBacktest('blockade')" id="tab-blockade" data-ar="🔴 الحصار 2017 — الأهم" data-en="🔴 2017 Blockade — Primary">🔴 الحصار 2017 — الأهم</button>
       <button class="backtest-tab" onclick="switchBacktest('oil')" id="tab-oil" data-ar="📉 أزمة النفط 2014-2016" data-en="📉 Oil Crisis 2014-2016">📉 أزمة النفط 2014-2016</button>
+      <button class="backtest-tab" onclick="switchBacktest('russia')" id="tab-russia" data-ar="🇺🇦 روسيا-أوكرانيا 2022" data-en="🇺🇦 Russia-Ukraine 2022">🇺🇦 روسيا-أوكرانيا 2022</button>
     </div>
 
     <!-- Blockade Scenario -->
@@ -1234,6 +1235,12 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
     <div class="backtest-panel" id="panel-oil">
       <div class="backtest-chart"><canvas id="backtestChart"></canvas></div>
       <div class="backtest-narrative" id="backtestNarrative"></div>
+    </div>
+
+    <!-- Russia-Ukraine Scenario -->
+    <div class="backtest-panel" id="panel-russia">
+      <div class="backtest-chart"><canvas id="russiaChart"></canvas></div>
+      <div class="backtest-narrative" id="russiaNarrative"></div>
     </div>
   <details class="sec-sources">
     <summary data-ar="📋 المصادر المستخدمة في هذا القسم" data-en="📋 Data sources for this section">📋 المصادر المستخدمة في هذا القسم</summary>
@@ -1723,6 +1730,23 @@ const DATA = {
     { score: 70, level: 'medium', ar: 'قطر تحتل المرتبة 12 عالمياً في مؤشر أداء الاستثمار الأجنبي 2024', en: 'Qatar ranks 12th globally in FDI Performance Index 2024 (+21 positions)',
       source: 'fDi Intelligence', time: '7mo', tagAr: 'استثمار', tagEn: 'Investment' },
   ],
+  russiaUkraine: {
+    // [R] European TTF Gas prices 2021-2022 — TradingEconomics / ICE
+    labels: ["Q3'21","Q4'21","Jan'22","Feb'22","Mar'22","Apr'22","May'22","Jun'22","Jul'22","Aug'22"],
+    labelsEn: ["Q3'21","Q4'21","Jan'22","Feb'22","Mar'22","Apr'22","May'22","Jun'22","Jul'22","Aug'22"],
+    ttf: [55, 95, 142, 120, 155, 98, 85, 155, 185, 342],  // EUR/MWh TTF spot [R]
+    alert: [0.8, 1.2, 1.5, 2.0, 2.8, 3.2, 3.0, 3.1, 3.4, 3.5],  // NEAF simulated [S]
+  },
+  russiaEvents: [
+    { date: 'Q3 2021', level: 'yellow-ev', ar: 'إنذار أصفر — T-6 أشهر', en: 'Yellow Alert — T-6 Months',
+      descAr: 'احتياطي الغاز الأوروبي عند أدنى مستوى في 5 سنوات. مؤشر GPR يرتفع بسبب التوترات في أفغانستان وحشود عسكرية روسية. TTF: €55/MWh — يرتفع بشكل غير طبيعي خارج الموسم. NEAF: تجاوز العتبة الأولى.', descEn: 'European gas storage at 5-year low. GPR rising on Afghanistan withdrawal + Russian military movements. TTF: €55/MWh — abnormally high for season. NEAF: first threshold crossed.' },
+    { date: 'Q4 2021', level: 'orange-ev', ar: 'إنذار برتقالي — T-3 أشهر', en: 'Orange Alert — T-3 Months',
+      descAr: 'حشود عسكرية روسية عند الحدود الأوكرانية رُصدت عبر بيانات AIS والأقمار الصناعية. TTF وصل €95/MWh. مؤشر EPU الأوروبي ارتفع 65%. NEAF أصدر إنذاراً لوزارة الطاقة ولـ QatarEnergy: فرصة إبرام عقود LNG أوروبية طويلة الأمد.', descEn: 'Russian military buildup at Ukrainian border detected via AIS + satellite data. TTF reached €95/MWh. European EPU index +65%. NEAF alert to Ministry of Energy and QatarEnergy: opportunity for long-term European LNG contracts.' },
+    { date: '24 فبراير 2022', level: 'red-ev', ar: 'بدء الحرب', en: 'War Commenced',
+      descAr: 'روسيا تغزو أوكرانيا. الدول الأوروبية تبحث عن بدائل فورية للغاز الروسي. قطر كانت جاهزة: QatarEnergy أبرمت عقوداً مع Shell و ConocoPhillips وRWE في غضون أسابيع. TTF سيصل €342/MWh في أغسطس. [R] بيانات ICE/TradingEconomics.', descEn: 'Russia invades Ukraine. European states urgently seek Russian gas alternatives. Qatar was ready: QatarEnergy signed contracts with Shell, ConocoPhillips, RWE within weeks. TTF would reach €342/MWh in August. [R] ICE/TradingEconomics data.' },
+    { date: 'Q3-Q4 2022', level: 'green-ev', ar: 'قطر: مكسب استراتيجي', en: 'Qatar: Strategic Gain',
+      descAr: 'QatarEnergy أبرمت عقوداً مع 9 شركات أوروبية في 2022 وحده. حصة السوق الأوروبية ارتفعت. التحذير المبكر بـ 6 أشهر أتاح التفاوض من موقع قوة — بدلاً من الاستجابة الطارئة. الرسالة للـ SCEAI: هذا بالضبط ما يفعله NEAF. [R] QatarEnergy Annual Report 2022.', descEn: 'QatarEnergy signed contracts with 9 European companies in 2022 alone. European market share rose. 6-month early warning enabled negotiation from strength — not emergency response. Message to SCEAI: this is exactly what NEAF does. [R] QatarEnergy Annual Report 2022.' },
+  ],
   blockade: {
     // [H] Real timeline of 2017 Qatar Blockade — dates and diplomatic events verified
     labels: ['يناير\'17','فبراير','مارس','أبريل','مايو','5 يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],
@@ -2158,16 +2182,74 @@ function renderNewsFeed() {
 }
 
 // ============ BACKTEST TAB SWITCH ============
+let russiaChartInstance = null;
 let blockadeChartInstance = null;
 let oilChartInstance = null;
 
 function switchBacktest(tab) {
-  document.getElementById('panel-blockade').classList.toggle('active', tab === 'blockade');
-  document.getElementById('panel-oil').classList.toggle('active', tab === 'oil');
-  document.getElementById('tab-blockade').classList.toggle('active', tab === 'blockade');
-  document.getElementById('tab-oil').classList.toggle('active', tab === 'oil');
+  ['blockade','oil','russia'].forEach(t => {
+    document.getElementById('panel-' + t).classList.toggle('active', tab === t);
+    document.getElementById('tab-' + t).classList.toggle('active', tab === t);
+  });
   if (tab === 'blockade' && !blockadeChartInstance) drawBlockade();
   if (tab === 'oil' && !oilChartInstance) { drawBacktest(); oilChartInstance = true; }
+  if (tab === 'russia' && !russiaChartInstance) drawRussia();
+}
+
+function drawRussia() {
+  const ctx = document.getElementById('russiaChart').getContext('2d');
+  const labels = lang === 'ar' ? DATA.russiaUkraine.labels : DATA.russiaUkraine.labelsEn;
+  russiaChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: lang === 'ar' ? 'سعر TTF (€/MWh) — حقيقي [R]' : 'TTF Gas Price (€/MWh) — Real [R]',
+          data: DATA.russiaUkraine.ttf,
+          borderColor: 'rgb(234,88,12)',
+          backgroundColor: 'rgba(234,88,12,0.08)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+          yAxisID: 'y',
+        },
+        {
+          label: lang === 'ar' ? 'مستوى إنذار NEAF — محاكاة [S]' : 'NEAF Alert Level — Simulated [S]',
+          data: DATA.russiaUkraine.alert,
+          borderColor: 'rgb(141,27,61)',
+          borderWidth: 2,
+          borderDash: [6,3],
+          tension: 0.4,
+          yAxisID: 'y2',
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: '#64748B', font: { size: 11 } } },
+        annotation: {
+          annotations: {
+            warLine: { type: 'line', xMin: 2, xMax: 2, borderColor: 'rgba(220,38,38,0.6)', borderWidth: 2, borderDash: [4,4],
+              label: { content: lang === 'ar' ? 'غزو روسيا' : 'Russian Invasion', display: true, position: 'start', font: { size: 10 }, color: '#DC2626', backgroundColor: 'rgba(255,255,255,0.9)' } }
+          }
+        }
+      },
+      scales: {
+        x: { ticks: { color: '#94A3B8', font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.04)' } },
+        y: { position: 'right', ticks: { color: '#94A3B8', callback: v => '€' + v, font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.04)' }, title: { display: true, text: 'TTF €/MWh', color: '#94A3B8', font: { size: 10 } } },
+        y2: { position: 'left', ticks: { color: '#8D1B3D', font: { size: 10 } }, max: 4, title: { display: true, text: 'NEAF Alert Level', color: '#8D1B3D', font: { size: 10 } } }
+      }
+    }
+  });
+  document.getElementById('russiaNarrative').innerHTML = DATA.russiaEvents.map(e => `
+    <div class="backtest-event ${e.level}" style="padding:16px;">
+      <div class="ev-date" style="font-weight:700;font-size:0.8rem;margin-bottom:4px;">${e.date}</div>
+      <div class="ev-title" style="font-size:0.85rem;font-weight:700;margin-bottom:6px;">${lang === 'ar' ? e.ar : e.en}</div>
+      <div class="ev-desc" style="font-size:0.78rem;line-height:1.6;">${lang === 'ar' ? e.descAr : e.descEn}</div>
+    </div>
+  `).join('');
 }
 
 function drawBlockade() {
