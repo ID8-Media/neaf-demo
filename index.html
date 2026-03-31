@@ -626,6 +626,51 @@ details[open] .sec-sources summary::after { transform: rotate(90deg); }
   border: 1px dashed rgba(0,0,0,0.1); border-radius: 8px; line-height: 1.6;
 }
 
+/* ============ EARLY WARNING WINDOW TIMELINE ============ */
+.ewt-wrap { }
+.ewt-chart { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.ewt-axis { display: flex; border-bottom: 2px solid var(--border); background: rgba(0,0,0,0.015); }
+.ewt-axis-label { flex-shrink: 0; width: 250px; padding: 9px 16px; font-size: 0.62rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; border-right: 1px solid var(--border); display: flex; align-items: center; }
+.ewt-axis-months { flex: 1; display: flex; position: relative; }
+.ewt-month-tick { flex: 1; text-align: center; font-size: 0.62rem; font-weight: 600; color: var(--text-muted); padding: 9px 0; border-right: 1px dashed rgba(0,0,0,0.07); }
+.ewt-month-tick:last-child { border-right: none; }
+.ewt-sweet-overlay { position: absolute; left: calc(100% * 2/6); width: calc(100% * 2/6); top: 0; bottom: 0; background: rgba(22,163,74,0.08); border-left: 2px dashed rgba(22,163,74,0.35); border-right: 2px dashed rgba(22,163,74,0.35); pointer-events: none; z-index: 1; }
+.ewt-sweet-label { position: absolute; top: 3px; left: 50%; transform: translateX(-50%); font-size: 0.55rem; font-weight: 800; color: var(--green); white-space: nowrap; letter-spacing: 0.03em; }
+.ewt-body { position: relative; }
+.ewt-body-sweet { position: absolute; left: calc(250px + (100% - 250px) * 2/6); width: calc((100% - 250px) * 2/6); top: 0; bottom: 0; background: rgba(22,163,74,0.04); border-left: 2px dashed rgba(22,163,74,0.25); border-right: 2px dashed rgba(22,163,74,0.25); pointer-events: none; z-index: 0; }
+.ewt-signal-row { display: flex; align-items: center; border-bottom: 1px solid rgba(0,0,0,0.04); min-height: 56px; position: relative; z-index: 1; }
+.ewt-signal-row:last-child { border-bottom: none; }
+.ewt-sig-label { flex-shrink: 0; width: 250px; padding: 8px 14px; border-right: 1px solid var(--border); }
+.ewt-sig-name { font-size: 0.7rem; font-weight: 700; color: var(--text); line-height: 1.35; }
+.ewt-sig-src { font-size: 0.57rem; color: var(--text-muted); margin-top: 2px; }
+.ewt-sig-badges { display: flex; gap: 4px; margin-top: 5px; flex-wrap: wrap; align-items: center; }
+.ewt-domain-badge { font-size: 0.54rem; padding: 1px 7px; border-radius: 8px; font-weight: 700; }
+.ewt-domain-labour { background: rgba(99,102,241,0.1); color: #6366F1; }
+.ewt-domain-hydrocarbon { background: rgba(234,88,12,0.1); color: #EA580C; }
+.ewt-domain-financial { background: rgba(141,27,61,0.1); color: var(--maroon); }
+.ewt-domain-geopolitical { background: rgba(220,38,38,0.1); color: #DC2626; }
+.ewt-domain-logistics { background: rgba(6,148,162,0.1); color: #0694A2; }
+.ewt-domain-legislative { background: rgba(245,158,11,0.12); color: #B45309; }
+.ewt-level-badge { font-size: 0.54rem; padding: 1px 7px; border-radius: 8px; font-weight: 800; }
+.ewt-level-high { background: rgba(220,38,38,0.1); color: #DC2626; }
+.ewt-level-med { background: rgba(234,179,8,0.12); color: #B45309; }
+.ewt-level-opp { background: rgba(22,163,74,0.1); color: var(--green); }
+.ewt-bar-col { flex: 1; position: relative; height: 56px; overflow: visible; }
+.ewt-bar { position: absolute; top: 50%; transform: translateY(-50%); height: 22px; border-radius: 6px; left: 0; transition: width 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); display: flex; align-items: center; padding: 0 7px; }
+.ewt-bar-label { font-size: 0.58rem; font-weight: 700; color: rgba(255,255,255,0.92); white-space: nowrap; overflow: hidden; }
+.ewt-bar.level-high { background: linear-gradient(90deg, rgba(220,38,38,0.85), rgba(220,38,38,0.4)); }
+.ewt-bar.level-med { background: linear-gradient(90deg, rgba(234,179,8,0.85), rgba(234,179,8,0.4)); }
+.ewt-bar.level-opp { background: linear-gradient(90deg, rgba(22,163,74,0.85), rgba(22,163,74,0.4)); }
+.ewt-impact-dot { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 13px; height: 13px; border-radius: 50%; border: 2.5px solid white; box-shadow: 0 0 0 2px currentColor, 0 2px 5px rgba(0,0,0,0.18); z-index: 3; cursor: default; }
+.ewt-impact-dot.level-high { color: #DC2626; background: #DC2626; }
+.ewt-impact-dot.level-med { color: #D97706; background: #D97706; }
+.ewt-impact-dot.level-opp { color: var(--green); background: var(--green); }
+.ewt-days-label { position: absolute; top: calc(50% - 18px); transform: translateX(-50%); font-size: 0.55rem; font-weight: 800; color: var(--text); white-space: nowrap; background: rgba(255,255,255,0.9); padding: 1px 5px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); z-index: 4; }
+.ewt-today-pin { position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--maroon); z-index: 2; pointer-events: none; }
+.ewt-legend { display: flex; gap: 16px; padding: 10px 16px; border-top: 1px solid var(--border); background: rgba(0,0,0,0.01); flex-wrap: wrap; }
+.ewt-legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.6rem; color: var(--text-muted); font-weight: 600; }
+.ewt-legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
 /* ============ INVESTMENT FLOW DETECTOR ============ */
 .opportunity-feed { display: flex; flex-direction: column; gap: 10px; }
 .opportunity-item {
@@ -867,18 +912,22 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
       <span class="snav-num">7</span>
       <span data-ar="المؤشرات القيادية" data-en="Leading">المؤشرات القيادية</span>
     </a>
-    <a class="snav-item" href="#sec-backtest" data-sec="sec-backtest,sec-leadtime">
+    <a class="snav-item" href="#sec-timeline" data-sec="sec-timeline">
       <span class="snav-num">8</span>
+      <span data-ar="النافذة الزمنية" data-en="2-4M Window">النافذة الزمنية</span>
+    </a>
+    <a class="snav-item" href="#sec-backtest" data-sec="sec-backtest,sec-leadtime">
+      <span class="snav-num">9</span>
       <span data-ar="الإثبات" data-en="Evidence">الإثبات</span>
     </a>
   </div>
   <div class="snav-group">
     <a class="snav-item" href="#sec-labour" data-sec="sec-labour">
-      <span class="snav-num">9</span>
+      <span class="snav-num">10</span>
       <span data-ar="المخاطر والتنبيه" data-en="Risks & Alerts">المخاطر والتنبيه</span>
     </a>
     <a class="snav-item" href="#sec-invest" data-sec="sec-invest">
-      <span class="snav-num">10</span>
+      <span class="snav-num">11</span>
       <span data-ar="الفرص" data-en="Opportunities">الفرص</span>
     </a>
   </div>
@@ -1228,7 +1277,34 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
 
   </div><!-- /sec-leading -->
 
-  <!-- ═══ SECTION 8: BACKTEST ═══ -->
+  <!-- ═══ SECTION 8: EARLY WARNING WINDOW TIMELINE ═══ -->
+  <div class="sec-block" id="sec-timeline">
+  <div class="section animate-in delay-3">
+    <div class="section-header">
+      <h3 data-ar="نافذة الإنذار المبكر — الإشارات النشطة للـ 6 أشهر القادمة" data-en="Early Warning Window — Active Signals for the Next 6 Months">نافذة الإنذار المبكر — الإشارات النشطة للـ 6 أشهر القادمة</h3>
+      <span class="section-badge" style="background:var(--green);" data-ar="2–4 أشهر مسبقاً" data-en="2–4 Months Ahead">2–4 أشهر مسبقاً</span>
+    </div>
+    <div class="section-note" data-ar="<strong>الفارق الاستراتيجي</strong>: يُميّز NEAF بين ثلاثة أنواع من المؤشرات — المتأخرة (تصف ما حدث)، والمتزامنة (تصف الحاضر)، <strong>والقيادية (تُنبئ بما سيحدث)</strong>. هذا الجدول يعرض الإشارات القيادية النشطة اليوم ويُقدّر موعد تحوّل كل منها إلى أثر اقتصادي ملموس. النافذة الخضراء (2-4 أشهر) هي <strong>نافذة القرار</strong> — الوقت الكافي لتحرك الوزارات والجهات قبل التأثير. <span class='note-production'>المصادر: بيانات حقيقية [R] إلا حيث يُشار صراحةً [S]</span>" data-en="<strong>Strategic differentiator</strong>: NEAF distinguishes between lagging (what happened), coincident (what is), and <strong>leading (what will happen)</strong> indicators. This chart shows today's active leading signals and estimates when each will materialize as a measurable economic impact. The green zone (2–4 months) is the <strong>Decision Window</strong> — enough time for ministries and agencies to act before impact. <span class='note-production'>Sources: real data [R] except where explicitly noted [S]</span>"><strong>الفارق الاستراتيجي</strong>: يُميّز NEAF بين المؤشرات المتأخرة والمتزامنة و<strong>القيادية</strong>. هذا الجدول يعرض الإشارات النشطة اليوم ويُقدّر موعد تحوّلها إلى أثر اقتصادي. النافذة الخضراء = <strong>نافذة القرار</strong>.</div>
+    <div class="ewt-wrap">
+      <div class="ewt-chart" id="ewtChart"></div>
+    </div>
+    <details class="sec-sources" style="margin-top:12px;">
+      <summary data-ar="📋 المصادر المستخدمة في هذا القسم" data-en="📋 Data sources for this section">📋 المصادر المستخدمة في هذا القسم</summary>
+      <div class="src-chips">
+        <a class="src-chip" href="https://dofe.gov.np" target="_blank"><span class="sbadge r">R</span> Nepal DoFE — Manpower License Data 2024</a>
+        <a class="src-chip" href="https://dmw.gov.ph" target="_blank"><span class="sbadge r">R</span> Philippines DMW — Deployment Statistics 2025</a>
+        <a class="src-chip" href="https://www.cmegroup.com/markets/energy/natural-gas/japan-korea-marker-jkm-natural-gas-swap.html" target="_blank"><span class="sbadge r">R</span> CME JKM vs Henry Hub Spread Q1 2026</a>
+        <a class="src-chip" href="https://www.spglobal.com/marketintelligence/en/mi/research-analysis/purchasing-managers-index-pmi.html" target="_blank"><span class="sbadge r">R</span> S&P Global / QFC Qatar PMI Jan 2026 = 50.4</a>
+        <a class="src-chip" href="https://energy.ec.europa.eu/topics/oil-gas-and-coal/natural-gas/energy-storage_en" target="_blank"><span class="sbadge r">R</span> EU Energy Storage Mandate — EC Official</a>
+        <a class="src-chip" href="https://www.mot.gov.sa/en/pages/default.aspx" target="_blank"><span class="sbadge r">R</span> Saudi Certificate of Origin 25% Workforce Rule — MoC KSA</a>
+        <a class="src-chip" href="https://www.frbsf.org/research-and-insights/data-and-indicators/geopolitical-risk-index/" target="_blank"><span class="sbadge r">R</span> AI-GPR Index — SF Fed / Caldara &amp; Iacoviello (Mar 2026)</a>
+        <span class="src-chip"><span class="sbadge s">S</span> Hamad Port cargo diversion — estimated from Q4 2025 Mwani data</span>
+      </div>
+    </details>
+  </div>
+  </div><!-- /sec-timeline -->
+
+  <!-- ═══ SECTION 9: BACKTEST ═══ -->
   <div class="sec-block" id="sec-backtest">
   <!-- BACKTEST -->
   <div class="section animate-in delay-4">
@@ -1942,7 +2018,100 @@ const DATA = {
     qatar: [30.4, 29.8, 29.1, 28.5, 27.3, 26.1, 24.8, 22.7, 21.2, 18.8],
     // [R] Australia + US combined share — IEA Gas 2024
     competitors: [22.1, 23.5, 25.2, 27.0, 28.6, 30.1, 31.5, 33.0, 34.5, 36.2],
-  }
+  },
+
+  // ── EARLY WARNING WINDOW: active leading signals today → estimated impact date ──
+  // All impact-day estimates are model projections [S] except where source marked [R]
+  timelineSignals: [
+    {
+      ar: 'تعليق تراخيص الاستقدام النيبالية',
+      en: 'Nepal Manpower License Suspension',
+      domain: 'labour', domainAr: 'سوق العمل', domainEn: 'Labour',
+      level: 'high', levelAr: 'عالٍ', levelEn: 'High',
+      impactDays: 55, // ~7-8 weeks for supply gap to hit active project sites
+      src: 'Nepal DoFE [R]',
+      srcUrl: 'https://dofe.gov.np',
+      descAr: 'يوليو 2024: إيقاف 580+ شركة استقدام → تأخر في تجديد العمالة للمشاريع الجارية',
+      descEn: 'Jul 2024: 580+ agency suspensions → delayed labour renewal for active Qatar projects',
+    },
+    {
+      ar: 'تراجع PMI الطلبات الجديدة - قطر',
+      en: 'Qatar PMI New Orders Sub-Index Decline',
+      domain: 'financial', domainAr: 'المالي', domainEn: 'Financial',
+      level: 'med', levelAr: 'متوسط', levelEn: 'Medium',
+      impactDays: 40, // PMI new orders leads GDP by ~5-6 weeks
+      src: 'S&P Global / QFC [R]',
+      srcUrl: 'https://www.spglobal.com/marketintelligence',
+      descAr: 'PMI 50.4 يناير 2026 — مؤشر الطلبات الجديدة دون التوقعات → إشارة تباطؤ غير هيدروكربوني',
+      descEn: 'PMI 50.4 Jan 2026 — New Orders sub-index below expectations → non-hydro slowdown signal',
+    },
+    {
+      ar: 'شهادة المنشأ السعودية — نسبة 25%',
+      en: 'Saudi CoO 25% Workforce Rule',
+      domain: 'legislative', domainAr: 'تشريعي', domainEn: 'Legislative',
+      level: 'med', levelAr: 'متوسط', levelEn: 'Medium',
+      impactDays: 50,
+      src: 'Saudi MoC [R]',
+      srcUrl: 'https://www.mci.gov.sa',
+      descAr: 'اشتراط نسبة 25% من العمالة القطرية لمنح شهادة المنشأ → يؤثر على تجارة الخدمات البينية',
+      descEn: '25% Qatari workforce rule for certificate of origin → impacts intra-GCC services trade',
+    },
+    {
+      ar: 'اقتراح رفع الحد الأدنى للأجور الفلبينية',
+      en: 'Philippines Minimum Wage Proposal (Gulf)',
+      domain: 'labour', domainAr: 'سوق العمل', domainEn: 'Labour',
+      level: 'med', levelAr: 'متوسط', levelEn: 'Medium',
+      impactDays: 70,
+      src: 'TUCP / Philippines DMW [R]',
+      srcUrl: 'https://dmw.gov.ph',
+      descAr: 'اقتراح TUCP برفع الحد الأدنى لـ 750 بيزو/يوم للعمال في الخليج → قد يرفع تكلفة العمالة 8-12%',
+      descEn: 'TUCP PHP 750/day proposal for Gulf workers → may raise labour cost 8-12% for employers',
+    },
+    {
+      ar: 'إعادة توجيه شحن الخليج عبر ميناء حمد',
+      en: 'GCC Cargo Diversion — Hamad Port',
+      domain: 'logistics', domainAr: 'اللوجستيات', domainEn: 'Logistics',
+      level: 'opp', levelAr: 'فرصة', levelEn: 'Opportunity',
+      impactDays: 65,
+      src: 'Mwani Qatar / MOPA [S]',
+      srcUrl: 'https://mwani.com.qa',
+      descAr: 'تسارع إعادة توجيه الشحن الخليجي → فرصة لبناء ميزة تنافسية في التقطير الإقليمي',
+      descEn: 'GCC cargo rerouting accelerating — opportunity for Qatar hub positioning (Q4 2025 +64%)',
+    },
+    {
+      ar: 'توسع فارق JKM-Henry Hub إلى $17',
+      en: 'JKM-Henry Hub Spread: $17.07/MMBtu',
+      domain: 'hydrocarbon', domainAr: 'الهيدروكربون', domainEn: 'Hydrocarbon',
+      level: 'opp', levelAr: 'فرصة', levelEn: 'Opportunity',
+      impactDays: 80,
+      src: 'CME Group / JKM [R]',
+      srcUrl: 'https://www.cmegroup.com/markets/energy/natural-gas/japan-korea-marker-jkm-natural-gas-swap.html',
+      descAr: 'فارق JKM-Henry Hub $17.07/MMBtu Q1 2026 → ارتفاع الطلب الآسيوي يُعزز قيمة العقود الفورية',
+      descEn: '$17.07/MMBtu spread Q1 2026 → rising Asian demand strengthens Qatar spot contract value',
+    },
+    {
+      ar: 'تصاعد مؤشر GPR الجيوسياسي (SF Fed)',
+      en: 'AI-GPR Index Rising — SF Fed',
+      domain: 'geopolitical', domainAr: 'جيوسياسي', domainEn: 'Geopolitical',
+      level: 'high', levelAr: 'عالٍ', levelEn: 'High',
+      impactDays: 95,
+      src: 'SF Fed / Caldara & Iacoviello [R]',
+      srcUrl: 'https://www.frbsf.org/research-and-insights/data-and-indicators/geopolitical-risk-index/',
+      descAr: 'مؤشر GPR فوق متوسط 2015-2024 المرجعي → إشارة مبكرة لاضطراب محتمل في أمداد الطاقة',
+      descEn: 'AI-GPR above 2015-2024 baseline → early signal for potential energy supply disruption',
+    },
+    {
+      ar: 'لائحة تخزين الطاقة الأوروبية المتسارعة',
+      en: 'EU Accelerated Energy Storage Mandate',
+      domain: 'hydrocarbon', domainAr: 'الهيدروكربون', domainEn: 'Hydrocarbon',
+      level: 'opp', levelAr: 'فرصة', levelEn: 'Opportunity',
+      impactDays: 110,
+      src: 'EC Official Journal [R]',
+      srcUrl: 'https://energy.ec.europa.eu/topics/oil-gas-and-coal/natural-gas/energy-storage_en',
+      descAr: 'تسريع متطلبات التخزين الأوروبية → ارتفاع الطلب على LNG كوقود احتياطي مرن',
+      descEn: 'EU storage mandate acceleration raises structural LNG demand as flexible backup fuel',
+    },
+  ],
 };
 
 // ============ LANGUAGE ============
@@ -1968,6 +2137,7 @@ function toggleLang() {
   renderBacktestNarrative();
   renderNewsFeed();
   renderLabourRisk();
+  renderTimeline();
   renderAlertCascade();
   renderOpportunityFeed();
   // Redraw charts for new language
@@ -2653,12 +2823,98 @@ async function fetchNarrativeIntelligence() {
   }
 }
 
+// ============ EARLY WARNING WINDOW TIMELINE ============
+
+function renderTimeline() {
+  const el = document.getElementById('ewtChart');
+  if (!el) return;
+  const signals = DATA.timelineSignals;
+  const MAX_DAYS = 180; // 6 months
+
+  // Domain color map
+  const domainColors = {
+    labour: '#6366F1',
+    hydrocarbon: '#EA580C',
+    financial: '#8D1B3D',
+    geopolitical: '#DC2626',
+    logistics: '#0694A2',
+    legislative: '#B45309',
+  };
+
+  // Level gradient stops
+  const levelGrad = {
+    high:  ['rgba(220,38,38,0.85)', 'rgba(220,38,38,0.38)'],
+    med:   ['rgba(234,179,8,0.85)', 'rgba(234,179,8,0.38)'],
+    opp:   ['rgba(22,163,74,0.85)',  'rgba(22,163,74,0.38)'],
+  };
+
+  const isAr = lang === 'ar';
+  const MONTHS = isAr
+    ? ['الآن', '+1 شهر', '+2 شهر', '+3 شهر', '+4 شهر', '+5 شهر', '+6 أشهر']
+    : ['Now',  '+1M',    '+2M',    '+3M',    '+4M',    '+5M',    '+6M'];
+
+  let html = `
+    <div class="ewt-axis">
+      <div class="ewt-axis-label">${isAr ? 'الإشارة القيادية' : 'Leading Signal'}</div>
+      <div class="ewt-axis-months">
+        ${MONTHS.map((m,i) => `<div class="ewt-month-tick">${m}</div>`).join('')}
+        <div class="ewt-sweet-overlay">
+          <div class="ewt-sweet-label">${isAr ? '⚡ نافذة القرار ⚡' : '⚡ Decision Window ⚡'}</div>
+        </div>
+      </div>
+    </div>
+    <div class="ewt-body">
+      <div class="ewt-body-sweet"></div>`;
+
+  signals.forEach(sig => {
+    const pct = Math.min(sig.impactDays / MAX_DAYS, 0.98); // fraction 0→1
+    const dcol = domainColors[sig.domain] || '#888';
+    const name = isAr ? sig.ar : sig.en;
+    const desc = isAr ? sig.descAr : sig.descEn;
+    const domainLabel = isAr ? sig.domainAr : sig.domainEn;
+    const levelLabel = isAr ? sig.levelAr : sig.levelEn;
+    const daysLabel = isAr
+      ? `${sig.impactDays} يوماً`
+      : `${sig.impactDays}d`;
+
+    html += `
+      <div class="ewt-signal-row">
+        <div class="ewt-sig-label">
+          <div class="ewt-sig-name">${name}</div>
+          <div class="ewt-sig-src">${sig.src}</div>
+          <div class="ewt-sig-badges">
+            <span class="ewt-domain-badge ewt-domain-${sig.domain}">${domainLabel}</span>
+            <span class="ewt-level-badge ewt-level-${sig.level}">${levelLabel}</span>
+          </div>
+        </div>
+        <div class="ewt-bar-col">
+          <div class="ewt-bar level-${sig.level}" style="width: calc(${pct * 100}% - 4px);">
+            <span class="ewt-bar-label">${desc.length > 60 ? '' : desc}</span>
+          </div>
+          <div class="ewt-impact-dot level-${sig.level}" style="left: calc(${pct * 100}%);" title="${desc}"></div>
+          <div class="ewt-days-label" style="left: calc(${pct * 100}%);">${daysLabel}</div>
+        </div>
+      </div>`;
+  });
+
+  html += `</div>
+    <div class="ewt-legend">
+      <div class="ewt-legend-item"><div class="ewt-legend-dot" style="background:#DC2626;"></div>${isAr ? 'مخاطرة عالية' : 'High Risk'}</div>
+      <div class="ewt-legend-item"><div class="ewt-legend-dot" style="background:#D97706;"></div>${isAr ? 'مخاطرة متوسطة' : 'Medium Risk'}</div>
+      <div class="ewt-legend-item"><div class="ewt-legend-dot" style="background:#16A34A;"></div>${isAr ? 'فرصة' : 'Opportunity'}</div>
+      <div class="ewt-legend-item" style="margin-right:auto;"><span style="background:rgba(22,163,74,0.12);padding:2px 8px;border-radius:6px;font-size:0.58rem;color:var(--green);font-weight:700;">${isAr ? '▓ النافذة الخضراء = 2-4 أشهر: الوقت الأمثل للتحرك' : '▓ Green Zone = 2-4 Months: Optimal Decision Window'}</span></div>
+      <div class="ewt-legend-item" style="color:var(--text-muted);font-size:0.57rem;">${isAr ? '● نقطة التأثير المُقدَّر' : '● Estimated Impact Date'}</div>
+    </div>`;
+
+  el.innerHTML = html;
+}
+
 // ============ SECTION NAV — REORDER + SCROLL SPY + PRESENTATION MODE ============
 
 function reorderSections() {
   const dashboard = document.querySelector('.dashboard');
   if (!dashboard) return;
-  const order = ['sec-arch','sec-score','sec-domains','sec-themes','sec-geo','sec-sentra','sec-lng','sec-leading','sec-backtest','sec-leadtime','sec-labour','sec-invest'];
+  const order = ['sec-arch','sec-score','sec-domains','sec-themes','sec-geo','sec-sentra','sec-lng','sec-leading','sec-timeline','sec-backtest','sec-leadtime','sec-labour','sec-invest'];
   order.forEach(id => {
     const el = document.getElementById(id);
     if (el) dashboard.appendChild(el);
@@ -2740,6 +2996,7 @@ function init() {
   drawSentiment();
   renderNewsFeed();
   renderLabourRisk();
+  renderTimeline();
   renderAlertCascade();
   drawLeadTimeChart();
   renderOpportunityFeed();
