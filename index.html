@@ -1153,7 +1153,7 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
   <div class="section animate-in delay-3">
     <div class="section-header">
       <h3 data-ar="المؤشرات القيادية — إشارات مبكرة 2-4 أشهر" data-en="Leading Indicators — 2–4 Month Early Signals">المؤشرات القيادية — إشارات مبكرة 2-4 أشهر</h3>
-      <span class="section-badge">Layer 4</span>
+      <span class="section-badge" style="background:var(--green)">Leading Indicators</span>
     </div>
     <div class="section-note" data-ar="<strong>الطبقة الرابعة — المؤشرات القيادية</strong>: على عكس المؤشرات المتزامنة (كأرقام GDP الحالية)، تتنبأ هذه المؤشرات بالتغيرات <strong>قبل 2-4 أشهر من حدوثها</strong>. مثال: بيانات الحجوزات الفندقية تنبأ بالإشغال الفعلي بشهرين. طلبات استيراد العمالة تنبأ بنشاط المشاريع بثلاثة أشهر. النظام يراقب هذه الإشارات المبكرة تلقائياً ويُصدر تنبيهات قبل أن تتجسد في أرقام رسمية. <span class='note-production'>في الإنتاج: تغذية مباشرة من QTA + PSA + QCB كل 24 ساعة</span>" data-en="<strong>Layer 4 — Leading Indicators</strong>: Unlike coincident indicators (current GDP figures), these signals predict changes <strong>2–4 months before they materialize</strong>. Example: hotel booking data predicts actual occupancy by 2 months. Labour import applications predict project activity by 3 months. The system monitors these early signals automatically and issues alerts before they appear in official statistics. <span class='note-production'>Production: Live feeds from QTA + PSA + QCB every 24 hours</span>"><strong>الطبقة الرابعة — المؤشرات القيادية</strong>: على عكس المؤشرات المتزامنة (كأرقام GDP الحالية)، تتنبأ هذه المؤشرات بالتغيرات <strong>قبل 2-4 أشهر من حدوثها</strong>. مثال: بيانات الحجوزات الفندقية تنبأ بالإشغال الفعلي بشهرين. طلبات استيراد العمالة تنبأ بنشاط المشاريع بثلاثة أشهر. النظام يراقب هذه الإشارات المبكرة تلقائياً ويُصدر تنبيهات قبل أن تتجسد في أرقام رسمية. <span class='note-production'>في الإنتاج: تغذية مباشرة من QTA + PSA + QCB كل 24 ساعة</span></div>
     <div class="nowcast-grid">
@@ -1163,13 +1163,46 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
         <ul class="nowcast-news" id="nowcastNews"></ul>
       </div>
     </div>
+  <!-- Tourism Leading Indicators mini-panel -->
+  <div style="margin-top:20px;">
+    <div style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;" data-ar="إشارات السياحة القيادية — حجوزات مستقبلية (لا إشغال فعلي)" data-en="Tourism Leading Signals — Forward Bookings (not current occupancy)">إشارات السياحة القيادية — حجوزات مستقبلية (لا إشغال فعلي)</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+      <div style="background:rgba(22,163,74,0.06);border:1px solid rgba(22,163,74,0.2);border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:1.5rem;font-weight:800;color:var(--green);">+8%</div>
+        <div style="font-size:0.7rem;color:var(--text-dim);margin-top:4px;" data-ar="حجوزات الفنادق — Q2 2026" data-en="Hotel Bookings — Q2 2026">حجوزات الفنادق — Q2 2026</div>
+        <div style="font-size:0.62rem;color:var(--text-muted);margin-top:6px;">STR / QTA Forward Data [S]</div>
+        <div style="font-size:0.62rem;color:var(--green);margin-top:2px;" data-ar="يتنبأ بالإشغال الفعلي بشهرين" data-en="Predicts actual occupancy by 2 months">↑ تنبؤ بشهرين مقدماً</div>
+      </div>
+      <div style="background:rgba(234,179,8,0.06);border:1px solid rgba(234,179,8,0.3);border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:1.5rem;font-weight:800;color:var(--yellow);">-12%</div>
+        <div style="font-size:0.7rem;color:var(--text-dim);margin-top:4px;" data-ar="بحث Google — 'رحلات قطر'" data-en="Google Search — 'Qatar travel'">بحث Google — 'رحلات قطر'</div>
+        <div style="font-size:0.62rem;color:var(--text-muted);margin-top:6px;"><a href="https://trends.google.com" target="_blank" style="color:inherit;">Google Trends [R]</a></div>
+        <div style="font-size:0.62rem;color:var(--yellow);margin-top:2px;" data-ar="مؤشر طلب مستقبلي قبل 6 أسابيع" data-en="Demand signal 6 weeks ahead">↓ إشارة قبل 6 أسابيع</div>
+      </div>
+      <div style="background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.2);border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:1.5rem;font-weight:800;color:#6366F1;">+15%</div>
+        <div style="font-size:0.7rem;color:var(--text-dim);margin-top:4px;" data-ar="حجوزات الرحلات — مطار حمد" data-en="Flight Bookings — HIA">حجوزات الرحلات — مطار حمد</div>
+        <div style="font-size:0.62rem;color:var(--text-muted);margin-top:6px;">IATA / Amadeus Forward [S]</div>
+        <div style="font-size:0.62rem;color:#6366F1;margin-top:2px;" data-ar="يتنبأ بأعداد المسافرين بـ 3 أشهر" data-en="Predicts arrivals 3 months ahead">↑ تنبؤ بـ 3 أشهر مقدماً</div>
+      </div>
+      <div style="background:rgba(141,27,61,0.05);border:1px solid rgba(141,27,61,0.15);border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:1.5rem;font-weight:800;color:var(--maroon);">3</div>
+        <div style="font-size:0.7rem;color:var(--text-dim);margin-top:4px;" data-ar="فعاليات إقليمية تنافسية" data-en="Competing Regional Events">فعاليات إقليمية تنافسية</div>
+        <div style="font-size:0.62rem;color:var(--text-muted);margin-top:6px;">مؤتمرات قطر / دبي / الرياض</div>
+        <div style="font-size:0.62rem;color:var(--maroon);margin-top:2px;" data-ar="مراقبة إعادة توجيه حركة السياح" data-en="Monitoring tourist flow redirect">⚠ خطر إعادة التوجيه</div>
+      </div>
+    </div>
+  </div>
+
   <details class="sec-sources">
     <summary data-ar="📋 المصادر المستخدمة في هذا القسم" data-en="📋 Data sources for this section">📋 المصادر المستخدمة في هذا القسم</summary>
     <div class="src-chips">
       <a class="src-chip" href="https://visitqatar.com" target="_blank"><span class="sbadge r">R</span> Hotel Bookings — QTA</a>
+      <a class="src-chip" href="https://trends.google.com" target="_blank"><span class="sbadge r">R</span> Google Trends — Qatar travel</a>
       <a class="src-chip" href="https://www.newyorkfed.org/research/policy/gscpi" target="_blank"><span class="sbadge r">R</span> GSCPI +0.49 — NY Fed</a>
       <a class="src-chip" href="https://www.npc.qa/en/statistics/" target="_blank"><span class="sbadge r">R</span> Construction imports — PSA</a>
       <span class="src-chip"><span class="sbadge s">S</span> LNG 2027 forward contracts</span>
+      <span class="src-chip"><span class="sbadge s">S</span> IATA/Amadeus flight bookings</span>
     </div>
   </details>
   </div>
@@ -1641,6 +1674,18 @@ const DATA = {
       descEn: 'Global trade route realignment from US tariff regime lifted Hamad Port transit traffic +8% Q1 2026 [R]. Counter-signal: pressure on Qatar industrial value chains dependent on Asian inputs. Net impact: under assessment.',
       actionAr: 'الجهة المعنية: وزارة التجارة + ميناء حمد + هيئة المناطق الصناعية',
       actionEn: 'Alert recipients: Ministry of Commerce + Hamad Port + Industrial Zones Authority',
+    },
+    {
+      level: 'yellow-ev',
+      icon: '⚖️',
+      ar: 'تغيير تشريعي: قاعدة المنشأ السعودية',
+      en: 'Legislative Signal: Saudi Certificate of Origin Rule',
+      alertAr: 'إشارة تشريعية — رُصدت مبكراً في مناقشات الجمارك الخليجية Q3 2024',
+      alertEn: 'Legislative Signal — Detected early in GCC customs discussions Q3 2024',
+      descAr: 'اشتراط توظيف 25% من كوادر قطرية للحصول على شهادة المنشأ السعودية للصادرات القطرية. رصد NEAF مناقشات اللجنة الخليجية قبل الإعلان الرسمي بـ 14 أسبوعاً. تنبيه صادر لوزارة التجارة والقطاع الصناعي القطري للتهيؤ قبل التطبيق.',
+      descEn: 'Saudi Arabia\'s new rule requiring 25% Qatari workforce for Saudi Certificate of Origin eligibility. NEAF monitored GCC customs committee discussions 14 weeks before official announcement. Alert issued to Ministry of Commerce and Qatari industrial sector to prepare ahead of enforcement.',
+      actionAr: 'الجهة المعنية: وزارة التجارة + هيئة المناطق الصناعية + غرفة التجارة',
+      actionEn: 'Alert recipients: Ministry of Commerce + Industrial Zones Authority + Chamber of Commerce',
     },
   ],
   backtest: {
