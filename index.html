@@ -378,6 +378,109 @@ body[dir="ltr"] .hero-note { border-right: none; border-left: 3px solid var(--ma
 ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--maroon); }
 
+/* ============ SECTION NAV ============ */
+.section-nav {
+  position: sticky; top: 76px; z-index: 90;
+  background: rgba(255,255,255,0.97); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: stretch;
+  overflow-x: auto; scrollbar-width: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.section-nav::-webkit-scrollbar { display: none; }
+.snav-group {
+  display: flex; align-items: stretch; flex-shrink: 0;
+  border-inline-end: 1px solid var(--border);
+}
+.snav-group:last-child { border-inline-end: none; margin-inline-start: auto; }
+.snav-item {
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 16px; height: 44px;
+  font-size: 0.75rem; font-weight: 600;
+  color: var(--text-dim); cursor: pointer; white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s; text-decoration: none; position: relative;
+}
+.snav-item:hover { color: var(--maroon); background: rgba(141,27,61,0.03); }
+.snav-item.active { color: var(--maroon); border-bottom-color: var(--maroon); background: rgba(141,27,61,0.04); }
+.snav-num {
+  width: 18px; height: 18px; border-radius: 50%; font-size: 0.6rem;
+  font-weight: 800; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.06); color: var(--text-muted); flex-shrink: 0;
+  transition: all 0.2s;
+}
+.snav-item.active .snav-num { background: var(--maroon); color: white; }
+.snav-actions {
+  display: flex; align-items: center; gap: 8px; padding: 0 16px; flex-shrink: 0;
+}
+.pres-btn {
+  font-size: 0.7rem; font-weight: 700; padding: 5px 14px; border-radius: 20px;
+  border: 1px solid rgba(141,27,61,0.3); color: var(--maroon);
+  background: transparent; cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; gap: 5px;
+}
+.pres-btn:hover, .pres-btn.on { background: var(--maroon); color: white; border-color: var(--maroon); }
+.pres-btn .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* ============ PRESENTATION MODE ============ */
+.presentation-mode .sec-block {
+  transition: opacity 0.4s, transform 0.4s;
+}
+.presentation-mode .sec-block:not(.in-focus) {
+  opacity: 0.15; pointer-events: none;
+}
+.presentation-mode .sec-block.in-focus {
+  opacity: 1; transform: none; pointer-events: all;
+}
+
+/* ============ INLINE SECTION SOURCES ============ */
+.sec-sources {
+  margin-top: 16px; padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.sec-sources summary {
+  cursor: pointer; list-style: none; user-select: none;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.7rem; font-weight: 600; color: var(--text-muted);
+  padding: 4px 0; transition: color 0.2s;
+}
+.sec-sources summary::-webkit-details-marker { display: none; }
+.sec-sources summary:hover { color: var(--maroon); }
+.sec-sources summary::after {
+  content: '›'; font-size: 0.85rem; transition: transform 0.2s; display: inline-block;
+}
+details[open] .sec-sources summary::after { transform: rotate(90deg); }
+.src-chips {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; padding-bottom: 2px;
+}
+.src-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.67rem; padding: 4px 10px; border-radius: 20px;
+  border: 1px solid var(--border); color: var(--text-dim);
+  text-decoration: none; transition: all 0.15s; background: rgba(0,0,0,0.01);
+  white-space: nowrap;
+}
+.src-chip:hover { border-color: var(--maroon); color: var(--maroon); background: rgba(141,27,61,0.03); }
+.src-chip .sbadge {
+  font-size: 0.55rem; font-weight: 800; padding: 1px 5px; border-radius: 3px;
+}
+.sbadge.r { background: rgba(22,163,74,0.12); color: var(--green); }
+.sbadge.s { background: rgba(202,138,4,0.12); color: var(--yellow); }
+.sbadge.h { background: rgba(99,102,241,0.12); color: #6366F1; }
+
+/* ============ SECTION WRAPPER ============ */
+.sec-block { scroll-margin-top: 124px; }
+/* Tighten layers+balance into arch group */
+#sec-arch { display: flex; flex-direction: column; gap: 0; }
+#sec-arch .layers-bar { margin-bottom: 12px; }
+#sec-arch .balance-strip { margin-bottom: 0; }
+
+/* ============ SOURCES SECTION (simplified appendix) ============ */
+.sources-appendix-note {
+  text-align: center; padding: 12px; font-size: 0.75rem; color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
 /* ============ BACKTEST TABS ============ */
 .backtest-tabs { display: flex; gap: 0; margin-bottom: 20px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; width: fit-content; }
 .backtest-tab {
@@ -708,9 +811,70 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
   </div>
 </header>
 
+<!-- SECTION NAV -->
+<nav class="section-nav" id="sectionNav" role="navigation">
+  <div class="snav-group">
+    <a class="snav-item active" href="#sec-arch" data-sec="sec-arch,sec-score">
+      <span class="snav-num">1</span>
+      <span data-ar="المعمارية" data-en="Architecture">المعمارية</span>
+    </a>
+    <a class="snav-item" href="#sec-domains" data-sec="sec-domains">
+      <span class="snav-num">2</span>
+      <span data-ar="المجالات" data-en="Domains">المجالات</span>
+    </a>
+  </div>
+  <div class="snav-group">
+    <a class="snav-item" href="#sec-themes" data-sec="sec-themes">
+      <span class="snav-num">3</span>
+      <span data-ar="البيانات الكمية" data-en="Quantitative">البيانات الكمية</span>
+    </a>
+    <a class="snav-item" href="#sec-geo" data-sec="sec-geo">
+      <span class="snav-num">4</span>
+      <span data-ar="الجيوسياسي" data-en="Geopolitical">الجيوسياسي</span>
+    </a>
+  </div>
+  <div class="snav-group">
+    <a class="snav-item" href="#sec-sentra" data-sec="sec-sentra">
+      <span class="snav-num">5</span>
+      <span data-ar="الذكاء السردي" data-en="Intelligence">الذكاء السردي</span>
+    </a>
+    <a class="snav-item" href="#sec-lng" data-sec="sec-lng">
+      <span class="snav-num">6</span>
+      <span>LNG</span>
+    </a>
+  </div>
+  <div class="snav-group">
+    <a class="snav-item" href="#sec-leading" data-sec="sec-leading">
+      <span class="snav-num">7</span>
+      <span data-ar="المؤشرات القيادية" data-en="Leading">المؤشرات القيادية</span>
+    </a>
+    <a class="snav-item" href="#sec-backtest" data-sec="sec-backtest,sec-leadtime">
+      <span class="snav-num">8</span>
+      <span data-ar="الإثبات" data-en="Evidence">الإثبات</span>
+    </a>
+  </div>
+  <div class="snav-group">
+    <a class="snav-item" href="#sec-labour" data-sec="sec-labour">
+      <span class="snav-num">9</span>
+      <span data-ar="المخاطر والتنبيه" data-en="Risks & Alerts">المخاطر والتنبيه</span>
+    </a>
+    <a class="snav-item" href="#sec-invest" data-sec="sec-invest">
+      <span class="snav-num">10</span>
+      <span data-ar="الفرص" data-en="Opportunities">الفرص</span>
+    </a>
+  </div>
+  <div class="snav-group">
+    <div class="snav-actions">
+      <button class="pres-btn" id="presBtn" onclick="togglePresMode()" data-ar="🎬 تركيز" data-en="🎬 Focus">🎬 تركيز</button>
+    </div>
+  </div>
+</nav>
+
 <!-- DASHBOARD -->
 <div class="dashboard">
 
+  <!-- ═══ SECTION 1: ARCHITECTURE ═══ -->
+  <div class="sec-block" id="sec-arch">
   <!-- NEAF ARCHITECTURE LAYERS -->
   <div class="layers-bar animate-in">
     <div class="layer-item">
@@ -770,6 +934,10 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
     </div>
   </div>
 
+  </div><!-- /sec-arch -->
+
+  <!-- ═══ SECTION 2: SCORE ═══ -->
+  <div class="sec-block" id="sec-score">
   <!-- RISK HERO -->
   <div class="risk-hero animate-in">
     <div class="risk-gauge">
@@ -845,8 +1013,23 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
         </div>
       </div>
     </div>
+  <details class="sec-sources">
+    <summary data-ar="📋 المصادر المستخدمة في هذا القسم" data-en="📋 Data sources for this section">📋 المصادر المستخدمة في هذا القسم</summary>
+    <div class="src-chips">
+      <a class="src-chip" href="https://www.npc.qa/en/statistics/" target="_blank"><span class="sbadge r">R</span> PSA / NPC Qatar</a>
+      <a class="src-chip" href="https://www.qfc.qa/en/media-centre/insights/indicators" target="_blank"><span class="sbadge r">R</span> S&P PMI / QFC</a>
+      <a class="src-chip" href="https://qna.org.qa/en/news-area/news/2026-2/8/" target="_blank"><span class="sbadge r">R</span> QCB Foreign Reserves</a>
+      <a class="src-chip" href="https://www.mas.gov.sg/publications/financial-stability-review" target="_blank"><span class="sbadge h">H</span> MAS FSR Methodology</a>
+      <a class="src-chip" href="https://www.oecd.org/en/data/datasets/composite-leading-indicators.html" target="_blank"><span class="sbadge h">H</span> OECD CLI Methodology</a>
+      <span class="src-chip"><span class="sbadge s">S</span> Composite NEAF Score</span>
+    </div>
+  </details>
   </div>
 
+  </div><!-- /sec-score -->
+
+  <!-- ═══ SECTION 3: DOMAINS ═══ -->
+  <div class="sec-block" id="sec-domains">
   <!-- DOMAIN CARDS -->
   <div class="section-note" data-ar="<strong>المجالات السبعة</strong> — كل بطاقة تمثل مجال اقتصادي رئيسي. الدرجة (0–4) محسوبة من عدة مؤشرات فرعية. <strong>أخضر</strong> = طبيعي، <strong>أصفر</strong> = يستدعي المراقبة، <strong>برتقالي</strong> = تحذير، <strong>أحمر</strong> = حرج. في النسخة النهائية: الضغط على أي بطاقة يعرض تفاصيل كل مؤشر فرعي مع سياقه التاريخي. <span class='note-production'>في الإنتاج: بيانات مباشرة من QCB + PSA + QatarEnergy</span>" data-en="<strong>Five Domains</strong> — Each card represents a major economic domain. Score (0–4) is calculated from multiple sub-indicators. <strong>Green</strong> = normal, <strong>Yellow</strong> = watch, <strong>Orange</strong> = warning, <strong>Red</strong> = critical. In production: clicking any card reveals sub-indicator details with historical context. <span class='note-production'>Production: Live feeds from QCB + PSA + QatarEnergy</span>"><strong>المجالات الخمسة</strong> — كل بطاقة تمثل مجال اقتصادي رئيسي. الدرجة (0–4) محسوبة من عدة مؤشرات فرعية. <strong>أخضر</strong> = طبيعي، <strong>أصفر</strong> = يستدعي المراقبة، <strong>برتقالي</strong> = تحذير، <strong>أحمر</strong> = حرج. في النسخة النهائية: الضغط على أي بطاقة يعرض تفاصيل كل مؤشر فرعي مع سياقه التاريخي. <span class='note-production'>في الإنتاج: بيانات مباشرة من QCB + PSA + QatarEnergy</span></div>
   <div class="domains-grid">
@@ -915,7 +1098,10 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
       <div class="domain-sparkline"><canvas id="spark7"></canvas></div>
     </div>
   </div>
+  </div><!-- /sec-domains -->
 
+  <!-- ═══ SECTION 4: QUANTITATIVE THEMES ═══ -->
+  <div class="sec-block" id="sec-themes">
   <!-- 7 THEMES -->
   <div class="section animate-in delay-2">
     <div class="section-header">
@@ -924,8 +1110,22 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
     </div>
     <div class="section-note" data-ar="<strong>الطبقة الأولى — المؤشرات الكمية</strong>: تعرض 7 محاور اقتصادية رئيسية بقيم حقيقية من مصادر رسمية (PSA, QCB, S&amp;P Global, QTA, Mwani). كل محور يعرض القيمة الحالية + اتجاه 12 شهر. في النظام المكتمل: <strong>47+ مؤشر فرعي</strong> يتم سحبها تلقائياً عبر APIs مع تصحيح موسمي وكشف القيم الشاذة. <span class='note-production'>جميع القيم المعروضة حالياً بيانات حقيقية [R] ما عدا المؤشرات المركبة</span>" data-en="<strong>Layer 1 — Quantitative Indicators</strong>: Displays 7 key economic themes with real values from official sources (PSA, QCB, S&amp;P Global, QTA, Mwani). Each shows current value + 12-month trend. In production: <strong>47+ sub-indicators</strong> auto-ingested via APIs with seasonal adjustment and outlier detection. <span class='note-production'>All values shown are real data [R] except composite scores</span>"><strong>الطبقة الأولى — المؤشرات الكمية</strong>: تعرض 7 محاور اقتصادية رئيسية بقيم حقيقية من مصادر رسمية (PSA, QCB, S&amp;P Global, QTA, Mwani). كل محور يعرض القيمة الحالية + اتجاه 12 شهر. في النظام المكتمل: <strong>47+ مؤشر فرعي</strong> يتم سحبها تلقائياً عبر APIs مع تصحيح موسمي وكشف القيم الشاذة. <span class='note-production'>جميع القيم المعروضة حالياً بيانات حقيقية [R] ما عدا المؤشرات المركبة</span></div>
     <div class="themes-grid" id="themesGrid"></div>
+  <details class="sec-sources">
+    <summary data-ar="📋 المصادر المستخدمة في هذا القسم" data-en="📋 Data sources for this section">📋 المصادر المستخدمة في هذا القسم</summary>
+    <div class="src-chips">
+      <a class="src-chip" href="https://tradingeconomics.com/qatar/inflation-cpi" target="_blank"><span class="sbadge r">R</span> CPI 2.51% — QSA</a>
+      <a class="src-chip" href="https://www.investing.com/commodities/brent-oil" target="_blank"><span class="sbadge r">R</span> Brent $104 — Investing.com</a>
+      <a class="src-chip" href="https://mfrqatar.com" target="_blank"><span class="sbadge r">R</span> Port 1.46M TEUs — Mwani</a>
+      <a class="src-chip" href="https://www.globalpropertyguide.com/middle-east/qatar/price-history" target="_blank"><span class="sbadge r">R</span> RE -2.4% — ValuStrat</a>
+      <a class="src-chip" href="https://thepeninsulaqatar.com/article/05/01/2026/qatar-population-increases-by-23-in-2025" target="_blank"><span class="sbadge r">R</span> Population 3.21M — PSA</a>
+    </div>
+  </details>
   </div>
 
+  </div><!-- /sec-themes -->
+
+  <!-- ═══ SECTION 5: GEOPOLITICAL ═══ -->
+  <div class="sec-block" id="sec-geo">
   <!-- GEOPOLITICAL DEVELOPMENTS -->
   <div class="section animate-in delay-2">
     <div class="section-header">
@@ -934,8 +1134,21 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
     </div>
     <div class="section-note" data-ar="<strong>الطبقة الجيوسياسية — البيانات النوعية</strong>: يرصد NEAF باستمرار الإشارات الجيوسياسية العالمية ويُعيد ترجمتها إلى أثر اقتصادي محتمل على قطر. لا ينتظر الأخبار الصريحة — بل يكتشف <strong>الإشارات المبكرة في بيانات الشحن والتجارة والتحولات التشريعية</strong> قبل أن تصبح أخباراً. مرساه: مؤشر GPR (Caldara & Iacoviello) المُعتمَد من الاحتياطي الفيدرالي الأمريكي، ومؤشر عدم اليقين الاقتصادي EPU، وبيانات الشحن العالمي في الوقت الفعلي. <span class='note-production'>في الإنتاج: مسح 10,000+ مصدر إخباري + بيانات برلمانية + تقارير GPR + سجلات AIS للسفن يومياً</span>" data-en="<strong>Geopolitical Layer — Qualitative Data</strong>: NEAF continuously scans global geopolitical signals and translates them into potential Qatar economic impact. It does not wait for explicit news — it detects <strong>early signals in shipping data, trade flows, and legislative changes</strong> before they become headlines. Anchored in: GPR index (Caldara & Iacoviello, US Federal Reserve-endorsed), Economic Policy Uncertainty (EPU) index, and real-time global shipping data. <span class='note-production'>Production: 10,000+ news sources + parliamentary data + GPR feeds + AIS vessel tracking daily</span>"><strong>الطبقة الجيوسياسية — البيانات النوعية</strong>: يرصد NEAF باستمرار الإشارات الجيوسياسية العالمية ويُعيد ترجمتها إلى أثر اقتصادي محتمل على قطر.</div>
     <div id="geoEvents" class="backtest-narrative" style="grid-template-columns: repeat(3,1fr); margin-top:0;"></div>
+  <details class="sec-sources">
+    <summary data-ar="📋 المصادر المستخدمة في هذا القسم" data-en="📋 Data sources for this section">📋 المصادر المستخدمة في هذا القسم</summary>
+    <div class="src-chips">
+      <a class="src-chip" href="https://www.matteoiacoviello.com/gpr.htm" target="_blank"><span class="sbadge r">R</span> GPR Index — Caldara & Iacoviello (Fed)</a>
+      <a class="src-chip" href="https://www.policyuncertainty.com/" target="_blank"><span class="sbadge r">R</span> EPU Index — policyuncertainty.com</a>
+      <a class="src-chip" href="https://www.cnbc.com/2026/03/26/oil-price-wti-brent-crude-iran-rejects-direct-us-trump-talks-hormuz.html" target="_blank"><span class="sbadge r">R</span> Hormuz closure — CNBC/Bloomberg</a>
+      <a class="src-chip" href="https://www.gie.eu/transparency-platform/" target="_blank"><span class="sbadge r">R</span> EU Gas Storage — GIE</a>
+    </div>
+  </details>
   </div>
 
+  </div><!-- /sec-geo -->
+
+  <!-- ═══ SECTION 7: LEADING INDICATORS ═══ -->
+  <div class="sec-block" id="sec-leading">
   <!-- LEADING INDICATORS -->
   <div class="section animate-in delay-3">
     <div class="section-header">
@@ -950,8 +1163,21 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
         <ul class="nowcast-news" id="nowcastNews"></ul>
       </div>
     </div>
+  <details class="sec-sources">
+    <summary data-ar="📋 المصادر المستخدمة في هذا القسم" data-en="📋 Data sources for this section">📋 المصادر المستخدمة في هذا القسم</summary>
+    <div class="src-chips">
+      <a class="src-chip" href="https://visitqatar.com" target="_blank"><span class="sbadge r">R</span> Hotel Bookings — QTA</a>
+      <a class="src-chip" href="https://www.newyorkfed.org/research/policy/gscpi" target="_blank"><span class="sbadge r">R</span> GSCPI +0.49 — NY Fed</a>
+      <a class="src-chip" href="https://www.npc.qa/en/statistics/" target="_blank"><span class="sbadge r">R</span> Construction imports — PSA</a>
+      <span class="src-chip"><span class="sbadge s">S</span> LNG 2027 forward contracts</span>
+    </div>
+  </details>
   </div>
 
+  </div><!-- /sec-leading -->
+
+  <!-- ═══ SECTION 8: BACKTEST ═══ -->
+  <div class="sec-block" id="sec-backtest">
   <!-- BACKTEST -->
   <div class="section animate-in delay-4">
     <div class="section-header">
@@ -976,8 +1202,21 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
       <div class="backtest-chart"><canvas id="backtestChart"></canvas></div>
       <div class="backtest-narrative" id="backtestNarrative"></div>
     </div>
+  <details class="sec-sources">
+    <summary data-ar="📋 المصادر المستخدمة في هذا القسم" data-en="📋 Data sources for this section">📋 المصادر المستخدمة في هذا القسم</summary>
+    <div class="src-chips">
+      <a class="src-chip" href="https://tradingeconomics.com/commodity/brent-crude-oil" target="_blank"><span class="sbadge h">H</span> Brent historical — TradingEconomics</a>
+      <a class="src-chip" href="https://www.qfc.qa/en/media-centre/insights/indicators" target="_blank"><span class="sbadge h">H</span> Qatar PMI archives — S&P/QFC</a>
+      <a class="src-chip" href="https://www.degruyterbrill.com/document/doi/10.1515/rmeef-2024-0028/html" target="_blank"><span class="sbadge h">H</span> $82B blockade loss — De Gruyter RMEEF</a>
+      <span class="src-chip"><span class="sbadge s">S</span> Alert levels — BIS/IMF methodology</span>
+    </div>
+  </details>
   </div>
 
+  </div><!-- /sec-backtest -->
+
+  <!-- ═══ SECTION 6: SENTRA INTELLIGENCE ═══ -->
+  <div class="sec-block" id="sec-sentra">
   <!-- SENTRA AI LAYER -->
   <div class="section animate-in delay-5">
     <div class="section-header">
@@ -1057,8 +1296,21 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
       </div>
       <div class="news-feed" id="newsFeed"></div>
     </div>
+  <details class="sec-sources">
+    <summary data-ar="📋 المصادر المستخدمة في هذا القسم" data-en="📋 Data sources for this section">📋 المصادر المستخدمة في هذا القسم</summary>
+    <div class="src-chips">
+      <span class="src-chip"><span class="sbadge r">R</span> MOFA — Deployed production system</span>
+      <a class="src-chip" href="https://www.cnbc.com" target="_blank"><span class="sbadge r">R</span> CNBC / Bloomberg / Reuters feeds</span></a>
+      <a class="src-chip" href="https://tradingeconomics.com/commodity/baltic" target="_blank"><span class="sbadge r">R</span> Baltic Dry Index 2,001 — TradingEconomics</a>
+      <span class="src-chip"><span class="sbadge s">S</span> Sentiment scores — EPU methodology</span>
+    </div>
+  </details>
   </div>
 
+  </div><!-- /sec-sentra -->
+
+  <!-- ═══ SECTION 9: LABOUR RISK ═══ -->
+  <div class="sec-block" id="sec-labour">
   <!-- LABOUR COUNTRY RISK -->
   <div class="section animate-in delay-3">
     <div class="section-header">
@@ -1105,8 +1357,21 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
         <span class="recipient-tag" data-ar="المجلس الأعلى للشؤون الاقتصادية" data-en="Supreme Council for Economic Affairs">المجلس الأعلى للشؤون الاقتصادية</span>
       </div>
     </div>
+  <details class="sec-sources">
+    <summary data-ar="📋 المصادر المستخدمة في هذا القسم" data-en="📋 Data sources for this section">📋 المصادر المستخدمة في هذا القسم</summary>
+    <div class="src-chips">
+      <a class="src-chip" href="https://dmw.gov.ph/statistics" target="_blank"><span class="sbadge r">R</span> 138,193 Filipino — Philippines DMW</a>
+      <a class="src-chip" href="https://nepal.iom.int" target="_blank"><span class="sbadge r">R</span> ~350K Nepali — IOM Nepal</a>
+      <a class="src-chip" href="http://www.bmet.gov.bd" target="_blank"><span class="sbadge r">R</span> Bangladesh — BMET</a>
+      <a class="src-chip" href="https://www.worldbank.org/en/topic/migrationremittancesdiasporaissues" target="_blank"><span class="sbadge r">R</span> World Bank Migration Matrix</a>
+    </div>
+  </details>
   </div>
 
+  </div><!-- /sec-labour -->
+
+  <!-- ═══ SECTION 8B: LEAD TIME PROOF ═══ -->
+  <div class="sec-block" id="sec-leadtime">
   <!-- LEAD TIME PROOF -->
   <div class="section animate-in delay-5">
     <div class="section-header">
@@ -1132,8 +1397,20 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
         <div class="leadtime-methodology" data-ar="<strong>المنهجية</strong>: إعادة بناء بأثر رجعي. البيانات حقيقية [H]. مستويات الإنذار محاكاة [S] بمعاملات ثابتة. لا يوجد ضبط على بيانات الاختبار — يُتيح مقارنة عادلة." data-en="<strong>Methodology</strong>: Retrospective reconstruction. Data is real [H]. Alert levels simulated [S] with fixed parameters. No fitting on test data — enables fair comparison."><strong>المنهجية</strong>: إعادة بناء بأثر رجعي. البيانات حقيقية [H]. مستويات الإنذار محاكاة [S] بمعاملات ثابتة.</div>
       </div>
     </div>
+  <details class="sec-sources">
+    <summary data-ar="📋 المصادر المستخدمة في هذا القسم" data-en="📋 Data sources for this section">📋 المصادر المستخدمة في هذا القسم</summary>
+    <div class="src-chips">
+      <a class="src-chip" href="https://www.bis.org/statistics/c_gaps.htm" target="_blank"><span class="sbadge h">H</span> BIS Credit-to-GDP Gap Methodology</a>
+      <a class="src-chip" href="https://www.imf.org/en/about/factsheets/sheets/2023/early-warning-exercise" target="_blank"><span class="sbadge h">H</span> IMF Early Warning Exercise</a>
+      <span class="src-chip"><span class="sbadge s">S</span> NEAF alerts — retrospective simulation</span>
+    </div>
+  </details>
   </div>
 
+  </div><!-- /sec-leadtime -->
+
+  <!-- ═══ SECTION 10: OPPORTUNITIES ═══ -->
+  <div class="sec-block" id="sec-invest">
   <!-- INVESTMENT FLOW DETECTOR -->
   <div class="section animate-in delay-5">
     <div class="section-header">
@@ -1142,8 +1419,20 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
     </div>
     <div class="section-note" data-ar="<strong>من الدفاع إلى الهجوم</strong>: NEAF لا يرصد المخاطر فقط — يكشف الفرص. عندما تضخ شركة عالمية استثماراً ضخماً، يرسم النظام سلسلة الإمداد تلقائياً ويُطابقها مع القدرات القطرية ويُصدر تنبيه فرصة. مثال: مجمع بتروكيماويات بـ 2 مليار دولار في آسيا يحتاج إيثان وبروبان — QatarEnergy تتمتع بميزة تنافسية في هذه المدخلات. <strong>ملاحظة: الأحداث المعروضة توضيحية [S] مبنية على نشاط استثماري حقيقي في Q1 2026</strong>. في الإنتاج: رصد مستمر لـ 50,000+ مصدر إخباري + قواعد بيانات الاستثمار الأجنبي المباشر." data-en="<strong>From Defense to Offense</strong>: NEAF doesn't only track risks — it surfaces opportunities. When a global company deploys large capital, the system automatically maps the supply chain, matches against Qatar's capabilities, and issues an opportunity alert. Example: a $2B Asian petrochemical complex requires ethane and propane — QatarEnergy has competitive advantage in these feedstocks. <strong>Note: Events shown are illustrative [S] based on real Q1 2026 investment activity</strong>. Production: continuous monitoring of 50,000+ news sources + FDI databases."><strong>من الدفاع إلى الهجوم</strong>: NEAF لا يرصد المخاطر فقط — يكشف الفرص. عندما تضخ شركة عالمية استثماراً ضخماً، يرسم النظام سلسلة الإمداد ويُطابقها مع القدرات القطرية.</div>
     <div class="opportunity-feed" id="opportunityFeed"></div>
+  <details class="sec-sources">
+    <summary data-ar="📋 المصادر المستخدمة في هذا القسم" data-en="📋 Data sources for this section">📋 المصادر المستخدمة في هذا القسم</summary>
+    <div class="src-chips">
+      <a class="src-chip" href="https://unctad.org/topic/investment/world-investment-report" target="_blank"><span class="sbadge r">R</span> UNCTAD FDI Database patterns</a>
+      <a class="src-chip" href="https://www.qfc.qa" target="_blank"><span class="sbadge r">R</span> QFC 0% corporate tax data</a>
+      <span class="src-chip"><span class="sbadge s">S</span> Opportunity scenarios — Q1 2026 patterns</span>
+    </div>
+  </details>
   </div>
 
+  </div><!-- /sec-invest -->
+
+  <!-- ═══ SECTION 6B: LNG INTELLIGENCE ═══ -->
+  <div class="sec-block" id="sec-lng">
   <!-- LNG MARKET INTELLIGENCE -->
   <div class="section animate-in delay-5">
     <div class="section-header">
@@ -1178,7 +1467,19 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
         </div>
       </div>
     </div>
+  <details class="sec-sources">
+    <summary data-ar="📋 المصادر المستخدمة في هذا القسم" data-en="📋 Data sources for this section">📋 المصادر المستخدمة في هذا القسم</summary>
+    <div class="src-chips">
+      <a class="src-chip" href="https://www.shell.com/energy-and-innovation/natural-gas/lng/lng-outlook.html" target="_blank"><span class="sbadge r">R</span> Shell LNG Outlook 2025</a>
+      <a class="src-chip" href="https://www.igu.org/resources/world-lng-report-2024/" target="_blank"><span class="sbadge r">R</span> IGU World LNG Report 2024</a>
+      <a class="src-chip" href="https://www.cmegroup.com/markets/energy/natural-gas/lng-japan-korea-marker-platts-swap.html" target="_blank"><span class="sbadge r">R</span> JKM $17.07 — CME Group</a>
+      <a class="src-chip" href="https://www.iea.org/reports/gas-2024" target="_blank"><span class="sbadge r">R</span> IEA Gas Market Report 2024</a>
+      <a class="src-chip" href="https://ieefa.org" target="_blank"><span class="sbadge r">R</span> IEEFA LNG Analysis</a>
+    </div>
+  </details>
   </div>
+
+  </div><!-- /sec-lng -->
 
   <!-- SOURCES -->
   <div class="sources animate-in delay-5">
@@ -2056,8 +2357,77 @@ function animateAiChain() {
   }, 900);
 }
 
+// ============ SECTION NAV — REORDER + SCROLL SPY + PRESENTATION MODE ============
+
+function reorderSections() {
+  const dashboard = document.querySelector('.dashboard');
+  if (!dashboard) return;
+  const order = ['sec-arch','sec-score','sec-domains','sec-themes','sec-geo','sec-sentra','sec-lng','sec-leading','sec-backtest','sec-leadtime','sec-labour','sec-invest'];
+  order.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) dashboard.appendChild(el);
+  });
+  // Keep sources block at very end
+  const sources = document.querySelector('.sources');
+  if (sources) dashboard.appendChild(sources);
+}
+
+function initScrollSpy() {
+  const navItems = document.querySelectorAll('.snav-item[data-sec]');
+  if (!navItems.length) return;
+  const secMap = {};
+  navItems.forEach(item => {
+    item.getAttribute('data-sec').split(',').forEach(id => { secMap[id.trim()] = item; });
+  });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navItems.forEach(i => i.classList.remove('active'));
+        if (secMap[id]) {
+          secMap[id].classList.add('active');
+          // scroll nav item into view
+          secMap[id].scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+        }
+      }
+    });
+  }, { rootMargin: '-15% 0px -65% 0px', threshold: 0 });
+  document.querySelectorAll('.sec-block').forEach(el => observer.observe(el));
+
+  // Click nav items: smooth scroll to section
+  navItems.forEach(item => {
+    item.addEventListener('click', e => {
+      e.preventDefault();
+      const firstSec = item.getAttribute('data-sec').split(',')[0].trim();
+      const target = document.getElementById(firstSec);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+}
+
+let presObserver = null;
+function togglePresMode() {
+  document.body.classList.toggle('presentation-mode');
+  const btn = document.getElementById('presBtn');
+  if (btn) btn.classList.toggle('on');
+
+  if (document.body.classList.contains('presentation-mode')) {
+    // Mark initially visible section as in-focus
+    presObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        entry.target.classList.toggle('in-focus', entry.isIntersecting);
+      });
+    }, { threshold: 0.25 });
+    document.querySelectorAll('.sec-block').forEach(el => presObserver.observe(el));
+  } else {
+    if (presObserver) { presObserver.disconnect(); presObserver = null; }
+    document.querySelectorAll('.sec-block').forEach(el => el.classList.remove('in-focus'));
+  }
+}
+
 // ============ INIT ============
 function init() {
+  reorderSections();
   drawRiskGauge();
   DATA.sparklines.forEach((d, i) => {
     const colors = ['rgb(234,179,8)','rgb(34,197,94)','rgb(234,179,8)','rgb(34,197,94)','rgb(34,197,94)','rgb(34,197,94)','rgb(234,179,8)','rgb(234,88,12)'];
@@ -2079,6 +2449,8 @@ function init() {
   renderOpportunityFeed();
   drawLngChart();
   animateAiChain();
+  // Init nav after sections are reordered
+  initScrollSpy();
 }
 
 document.addEventListener('DOMContentLoaded', init);
