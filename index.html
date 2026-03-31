@@ -2196,6 +2196,8 @@ function toggleLang() {
   // Redraw charts for new language
   document.getElementById('leadTimeChart').getContext('2d');
   if (blockadeChartInstance) { blockadeChartInstance.destroy(); blockadeChartInstance = null; drawBlockade(); }
+  if (oilChartInstance) { oilChartInstance.destroy(); oilChartInstance = null; drawBacktest(); }
+  if (russiaChartInstance) { russiaChartInstance.destroy(); russiaChartInstance = null; drawRussia(); }
   // Redraw nowcast
   if (document.getElementById('nowcastChart')) {
     const oldChart = Chart.getChart('nowcastChart');
@@ -2338,53 +2340,58 @@ function renderNowcastNews() {
 
 // ============ BACKTEST ============
 function drawBacktest() {
+  const existing = Chart.getChart('backtestChart');
+  if (existing) existing.destroy();
   const ctx = document.getElementById('backtestChart').getContext('2d');
-  new Chart(ctx, {
+  oilChartInstance = new Chart(ctx, {
     type: 'line',
     data: {
       labels: DATA.backtest.labels,
       datasets: [
         {
-          label: lang === 'ar' ? 'سعر برنت ($)' : 'Brent Price ($)',
+          label: lang === 'ar' ? 'سعر برنت ($) — حقيقي [H]' : 'Brent Price ($) — Real [H]',
           data: DATA.backtest.brent,
           borderColor: '#C9A84C', borderWidth: 2.5, pointRadius: 3, pointBackgroundColor: '#C9A84C',
-          yAxisID: 'y',
-          tension: 0.3,
+          yAxisID: 'y', tension: 0.3,
         },
         {
-          label: lang === 'ar' ? 'مستوى إنذار NEAF' : 'NEAF Alert Level',
+          label: lang === 'ar' ? 'مستوى إنذار NEAF — محاكاة [S]' : 'NEAF Alert Level — Simulated [S]',
           data: DATA.backtest.alert,
           borderColor: '#EF4444', borderWidth: 2, borderDash: [5,3],
           backgroundColor: 'rgba(239,68,68,0.1)', fill: true,
-          pointRadius: 3, pointBackgroundColor: (ctx) => {
+          pointRadius: 4,
+          pointBackgroundColor: (ctx) => {
             const v = ctx.raw;
             if (v >= 2.5) return '#EF4444';
             if (v >= 1.5) return '#F97316';
             if (v >= 0.5) return '#EAB308';
             return '#22C55E';
           },
-          yAxisID: 'y1',
-          tension: 0.3,
+          yAxisID: 'y1', tension: 0.3,
         }
       ]
     },
     options: {
-      responsive: false,
+      responsive: true, maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: { position: 'top', labels: { color: '#64748B' } },
+        legend: { position: 'top', labels: { color: '#64748B', font: { size: 11 } } },
         tooltip: { mode: 'index', intersect: false }
       },
       scales: {
-        x: { ticks: { color: '#94A3B8' }, grid: { color: 'rgba(0,0,0,0.06)' } },
-        y: { position: lang === 'ar' ? 'right' : 'left', ticks: { color: '#C9A84C', callback: v => '$'+v }, grid: { color: 'rgba(0,0,0,0.06)' }, min: 20, max: 130 },
-        y1: { position: lang === 'ar' ? 'left' : 'right', ticks: { color: '#EF4444', callback: v => {
-          if (v === 0) return lang === 'ar' ? 'أخضر' : 'Green';
-          if (v === 1) return lang === 'ar' ? 'أصفر' : 'Yellow';
-          if (v === 2) return lang === 'ar' ? 'برتقالي' : 'Orange';
-          if (v === 3) return lang === 'ar' ? 'أحمر' : 'Red';
-          return '';
-        }}, grid: { drawOnChartArea: false }, min: 0, max: 4 }
+        x: { ticks: { color: '#94A3B8', font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.06)' } },
+        y: {
+          position: 'left',
+          ticks: { color: '#C9A84C', callback: v => '$' + v, font: { size: 10 } },
+          grid: { color: 'rgba(0,0,0,0.06)' }, min: 20, max: 130,
+          title: { display: true, text: 'Brent $/bbl', color: '#C9A84C', font: { size: 10 } }
+        },
+        y1: {
+          position: 'right',
+          ticks: { color: '#EF4444', font: { size: 10 }, callback: v => v === 0 ? '0' : v },
+          grid: { drawOnChartArea: false }, min: 0, max: 4,
+          title: { display: true, text: lang === 'ar' ? 'مستوى الإنذار (0-4)' : 'Alert Level (0–4)', color: '#EF4444', font: { size: 10 } }
+        }
       }
     }
   });
@@ -2453,12 +2460,14 @@ function switchBacktest(tab) {
     document.getElementById('tab-' + t).classList.toggle('active', tab === t);
   });
   if (tab === 'blockade' && !blockadeChartInstance) drawBlockade();
-  if (tab === 'oil' && !oilChartInstance) { drawBacktest(); oilChartInstance = true; }
+  if (tab === 'oil' && !oilChartInstance) drawBacktest();
   if (tab === 'russia' && !russiaChartInstance) drawRussia();
   if (tab === 'redsea' && !redseaChartInstance) drawRedsea();
 }
 
 function drawRedsea() {
+  const existing = Chart.getChart('redseaChart');
+  if (existing) existing.destroy();
   const ctx = document.getElementById('redseaChart').getContext('2d');
   const labels = lang === 'ar' ? DATA.redSea.labels : DATA.redSea.labelsEn;
   redseaChartInstance = new Chart(ctx, {
@@ -2532,6 +2541,8 @@ function drawRedsea() {
 }
 
 function drawRussia() {
+  const existing = Chart.getChart('russiaChart');
+  if (existing) existing.destroy();
   const ctx = document.getElementById('russiaChart').getContext('2d');
   const labels = lang === 'ar' ? DATA.russiaUkraine.labels : DATA.russiaUkraine.labelsEn;
   russiaChartInstance = new Chart(ctx, {
@@ -2588,6 +2599,8 @@ function drawRussia() {
 }
 
 function drawBlockade() {
+  const existing = Chart.getChart('blockadeChart');
+  if (existing) existing.destroy();
   const ctx = document.getElementById('blockadeChart').getContext('2d');
   const labels = lang === 'ar' ? DATA.blockade.labels : DATA.blockade.labelsEn;
   blockadeChartInstance = new Chart(ctx, {
