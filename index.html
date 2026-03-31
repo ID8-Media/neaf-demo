@@ -1130,7 +1130,7 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
   <div class="section animate-in delay-2">
     <div class="section-header">
       <h3 data-ar="التطورات الجيوسياسية والتشريعية — إنذار مبكر 3-4 أشهر" data-en="Geopolitical & Legislative Developments — 3–4 Month Early Warning">التطورات الجيوسياسية والتشريعية — إنذار مبكر 3-4 أشهر</h3>
-      <span class="section-badge" style="background:var(--orange)">Layer 2B</span>
+      <span class="section-badge" style="background:var(--orange)">جيوسياسي · تشريعي</span>
     </div>
     <div class="section-note" data-ar="<strong>الطبقة الجيوسياسية — البيانات النوعية</strong>: يرصد NEAF باستمرار الإشارات الجيوسياسية العالمية ويُعيد ترجمتها إلى أثر اقتصادي محتمل على قطر. لا ينتظر الأخبار الصريحة — بل يكتشف <strong>الإشارات المبكرة في بيانات الشحن والتجارة والتحولات التشريعية</strong> قبل أن تصبح أخباراً. مرساه: مؤشر GPR (Caldara & Iacoviello) المُعتمَد من الاحتياطي الفيدرالي الأمريكي، ومؤشر عدم اليقين الاقتصادي EPU، وبيانات الشحن العالمي في الوقت الفعلي. <span class='note-production'>في الإنتاج: مسح 10,000+ مصدر إخباري + بيانات برلمانية + تقارير GPR + سجلات AIS للسفن يومياً</span>" data-en="<strong>Geopolitical Layer — Qualitative Data</strong>: NEAF continuously scans global geopolitical signals and translates them into potential Qatar economic impact. It does not wait for explicit news — it detects <strong>early signals in shipping data, trade flows, and legislative changes</strong> before they become headlines. Anchored in: GPR index (Caldara & Iacoviello, US Federal Reserve-endorsed), Economic Policy Uncertainty (EPU) index, and real-time global shipping data. <span class='note-production'>Production: 10,000+ news sources + parliamentary data + GPR feeds + AIS vessel tracking daily</span>"><strong>الطبقة الجيوسياسية — البيانات النوعية</strong>: يرصد NEAF باستمرار الإشارات الجيوسياسية العالمية ويُعيد ترجمتها إلى أثر اقتصادي محتمل على قطر.</div>
     <div id="geoEvents" class="backtest-narrative" style="grid-template-columns: repeat(3,1fr); margin-top:0;"></div>
@@ -1447,7 +1447,7 @@ body[dir="rtl"] .decomp-formula { direction: rtl; text-align: right; }
   <!-- INVESTMENT FLOW DETECTOR -->
   <div class="section animate-in delay-5">
     <div class="section-header">
-      <h3 data-ar="كاشف الفرص الاستثمارية العالمية" data-en="Global Investment Flow Detector">كاشف الفرص الاستثمارية العالمية</h3>
+      <h3 data-ar="رسم سلاسل الإمداد — كاشف الفرص الاستثمارية" data-en="Supply Chain Mapping — Investment Opportunity Detector">رسم سلاسل الإمداد — كاشف الفرص الاستثمارية</h3>
       <span class="section-badge" style="background:var(--green)">فرص نشطة</span>
     </div>
     <div class="section-note" data-ar="<strong>من الدفاع إلى الهجوم</strong>: NEAF لا يرصد المخاطر فقط — يكشف الفرص. عندما تضخ شركة عالمية استثماراً ضخماً، يرسم النظام سلسلة الإمداد تلقائياً ويُطابقها مع القدرات القطرية ويُصدر تنبيه فرصة. مثال: مجمع بتروكيماويات بـ 2 مليار دولار في آسيا يحتاج إيثان وبروبان — QatarEnergy تتمتع بميزة تنافسية في هذه المدخلات. <strong>ملاحظة: الأحداث المعروضة توضيحية [S] مبنية على نشاط استثماري حقيقي في Q1 2026</strong>. في الإنتاج: رصد مستمر لـ 50,000+ مصدر إخباري + قواعد بيانات الاستثمار الأجنبي المباشر." data-en="<strong>From Defense to Offense</strong>: NEAF doesn't only track risks — it surfaces opportunities. When a global company deploys large capital, the system automatically maps the supply chain, matches against Qatar's capabilities, and issues an opportunity alert. Example: a $2B Asian petrochemical complex requires ethane and propane — QatarEnergy has competitive advantage in these feedstocks. <strong>Note: Events shown are illustrative [S] based on real Q1 2026 investment activity</strong>. Production: continuous monitoring of 50,000+ news sources + FDI databases."><strong>من الدفاع إلى الهجوم</strong>: NEAF لا يرصد المخاطر فقط — يكشف الفرص. عندما تضخ شركة عالمية استثماراً ضخماً، يرسم النظام سلسلة الإمداد ويُطابقها مع القدرات القطرية.</div>
@@ -1843,6 +1843,15 @@ const DATA = {
       tagAr: 'تقنية / بنية تحتية', tagEn: 'Tech / Infrastructure',
       source: 'Siemens Press Release Q1 2026 [R]',
       windowAr: 'نافذة: 60 يوماً', windowEn: 'Window: 60 days',
+      scoreLineAr: 'Qatar Opportunity Score', scoreLineEn: 'Qatar Opportunity Score' },
+    { scoreVal: 7.8, scoreClass: 'high', mock: false,
+      eventAr: 'مصنع إطارات جديد — $500M في تركيا (2026)',
+      eventEn: 'New Tire Factory — $500M in Turkey (2026)',
+      vectorAr: 'سلسلة إمداد المصنع: مطاط اصطناعي (بيوتاديين) + كربون أسود + فولاذ. QatarEnergy تُنتج بيوتاديين كمنتج فرعي — ميزة تنافسية في التسعير. نافذة لعقد إمداد طويل الأمد قبل توقيع التعاقدات.',
+      vectorEn: 'Factory supply chain: synthetic rubber (butadiene) + carbon black + steel. QatarEnergy produces butadiene as byproduct — competitive pricing advantage. Window for long-term supply contract before procurement closes.',
+      tagAr: 'بتروكيماويات · تصنيع', tagEn: 'Petrochemicals · Manufacturing',
+      source: 'UNCTAD Investment Monitor + QatarEnergy Annual Report [R]',
+      windowAr: 'نافذة: 75 يوماً', windowEn: 'Window: 75 days',
       scoreLineAr: 'Qatar Opportunity Score', scoreLineEn: 'Qatar Opportunity Score' },
     { scoreVal: 6.3, scoreClass: 'med', mock: false,
       eventAr: 'شركات أوروبية تبحث عن مراكز إقليمية خارج الإمارات — ضريبة 9%',
